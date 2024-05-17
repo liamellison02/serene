@@ -1,13 +1,24 @@
 from flask import Flask, session, redirect
 from functools import wraps
-import pymongo
+from pymongo.mongo_client import MongoClient
 
 app = Flask(__name__)
-app.secret_key = b'\xcc^\x91\xea\x17-\xd0W\x03\xa7\xf8J0\xac8\xc5'
+app.secret_key = b'\xa8\x89\xb5p\xdb\xc02\xd0\xf1V$\xfe\x8ad\xe6\xf6'
 
+# this MUST be removed from code when pushed to repositories
+# if you are testing locally, replace <username>:<password> with your credentials
+uri = "mongodb+srv://<username>:<password>@worker.jx0silc.mongodb.net/?retryWrites=true&w=majority&appName=worker"
+
+# Create a new client and connect to the server
+client = MongoClient(uri)
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
 # Database
-client = pymongo.MongoClient('localhost', 27017)
-db = client.user_login_system_test
+db = client.worker
 
 
 # Decorators
