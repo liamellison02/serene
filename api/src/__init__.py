@@ -1,13 +1,22 @@
 from flask import Flask, session, redirect
 from functools import wraps
-import pymongo
+from pymongo.mongo_client import MongoClient
 
 app = Flask(__name__)
-app.secret_key = b'\xcc^\x91\xea\x17-\xd0W\x03\xa7\xf8J0\xac8\xc5'
+# these strings MUST be empty when pushing to git
+app.secret_key = b''
+uri = ""
 
+# Create a new client and connect to the server
+client = MongoClient(uri)
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
 # Database
-client = pymongo.MongoClient('localhost', 27017)
-db = client.user_login_system_test
+db = client.worker
 
 
 # Decorators

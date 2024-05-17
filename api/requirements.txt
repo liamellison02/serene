@@ -1,11 +1,6 @@
-requests
 flask
 flask-cors
 pymongo
-nltk
-torch
-tensorflow
-spacy
 passlib
 uuid
-functools
+requests
