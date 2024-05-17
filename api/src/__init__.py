@@ -5,9 +5,8 @@ from pymongo.mongo_client import MongoClient
 app = Flask(__name__)
 app.secret_key = b'\xa8\x89\xb5p\xdb\xc02\xd0\xf1V$\xfe\x8ad\xe6\xf6'
 
-# this MUST be removed from code when pushed to repositories
-# if you are testing locally, replace <username>:<password> with your credentials
-uri = "mongodb+srv://<username>:<password>@worker.jx0silc.mongodb.net/?retryWrites=true&w=majority&appName=worker"
+# this string MUST be empty when pushing to git
+uri = ""
 
 # Create a new client and connect to the server
 client = MongoClient(uri)
