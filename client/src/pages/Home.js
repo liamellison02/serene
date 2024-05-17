@@ -1,13 +1,11 @@
-import Feed from "../components"
+import { Feed } from "../components"
 
 function Home() {
-    return (
-        <div className="min-h-screen flex items-center justify-center">
-            <h1 className="text-4xl font-bold text-blue-500">
-                Hello, Tailwind CSS!
-            </h1>
-        </div>
-    );
+	return (
+		<div id="HomePage" className="w-full h-full flex justify-center align-middle">
+			<Feed />
+		</div>
+	);
 }
 
 export default Home;

@@ -7,7 +7,7 @@ import { Header } from './components'
 function App() {
   return (
     <BrowserRouter>
-    <Header />
+      <Header />
       <Routes>
         <Route exact path="/" element={<Home />} />
       </Routes>
