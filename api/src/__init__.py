@@ -3,9 +3,8 @@ from functools import wraps
 from pymongo.mongo_client import MongoClient
 
 app = Flask(__name__)
-app.secret_key = b'\xa8\x89\xb5p\xdb\xc02\xd0\xf1V$\xfe\x8ad\xe6\xf6'
-
-# this string MUST be empty when pushing to git
+# these strings MUST be empty when pushing to git
+app.secret_key = b''
 uri = ""
 
 # Create a new client and connect to the server
