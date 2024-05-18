@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { GetUserAndTimelineTweetData } from "./GetTweetData"
+import GetTweetData from "./GetTweetData"
 
 function Tweet({user, text}) {
     return (
@@ -12,8 +11,8 @@ function Tweet({user, text}) {
 
 function Feed() {
 
-    const user_tweets = GetUserAndTimelineTweetData()["user_tweet_data"];
-    const timeline_tweets = GetUserAndTimelineTweetData()["timeline_tweet_data"];
+    const user_tweets = GetTweetData()["user_tweet_data"];
+    const timeline_tweets = GetTweetData()["timeline_tweet_data"];
 
     const tweets = [...user_tweets, ...timeline_tweets];
 
