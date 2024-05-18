@@ -4,8 +4,6 @@ from pymongo.mongo_client import MongoClient
 
 app = Flask(__name__)
 # these strings MUST be empty when pushing to git
-app.secret_key = b''
-uri = ""
 
 # Create a new client and connect to the server
 client = MongoClient(uri)

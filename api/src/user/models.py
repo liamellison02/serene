@@ -11,7 +11,7 @@ class User:
     def start_session(self, user):
         del user['password']
         session['logged_in'] = True
-        session['user'] = user
+        session['username'] = user
         self.is_authenticated = True
         return jsonify(user), 200
 
