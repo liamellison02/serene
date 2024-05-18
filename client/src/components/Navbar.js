@@ -24,7 +24,7 @@ const Navbar = () => {
   }
 
   return (
-    <header className="h-[10vh] bg-[#f8f7f1ea] hover:bg-[#f8f7f1] backdrop-blur-md w-full sticky top-0 left-0 right-0 z-[100]">
+    <header className="h-[10vh] bg-[#f8f7f1ea] backdrop-blur-md w-full sticky top-0 left-0 right-0 z-[100]">
       <nav className="h-full">
         <div className="h-full flex items-center justify-between py-4 md:px-8 px-4">
           <div className="h-full font-bold cursor-pointer ">
@@ -41,7 +41,7 @@ const Navbar = () => {
               >
                 <a
                   href={e.link}
-                  className="text-[#000000] hover:text-[#8cbc24] transition-all duration-200 flex items-center"
+                  className="text-[#000000] hover:text-[#706cac] transition-all duration-200 flex items-center"
                 >
                   {e.id} {e.dropdown && <FaChevronDown size='16px' style={{ margin: '3px 0 0 4px' }} />}
                 </a>
