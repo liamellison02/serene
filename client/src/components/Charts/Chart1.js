@@ -1,3 +1,4 @@
+import React from "react";
 import GetTweetData from "../GetTweetData";
 import { Bar } from "react-chartjs-2";
 import {
@@ -22,6 +23,8 @@ ChartJS.register(
 
 function Chart1() {
   const timeline_data = GetTweetData()["timeline_analysis_data"];
+  console.log(timeline_data);
+
   // Handle missing data
   if (!timeline_data) {
     return <p>Loading data...</p>;
@@ -55,7 +58,7 @@ function Chart1() {
   };
   return (
     <div className="w-[300px] h-[300px] m-10 bg-white-500">
-      <h1 className="font-bold">Chart #2</h1>
+      <h1 className="font-bold">Chart #1</h1>
       <div>
         <h2>Overall Emotion Intensity</h2>
         <Bar data={chartData} />
