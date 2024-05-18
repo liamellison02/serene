@@ -4,3 +4,11 @@ pymongo
 passlib
 uuid
 requests
+jupyter
+matplotlib
+nlp
+numpy
+pandas
+scikit_learn
+tensorflow==2.11.0
+tensorflow_intel==2.11.0
