@@ -15,10 +15,10 @@ function GradientBall() {
 
 function Header() {
     return (
-        <header className="w-full h-[60px] px-8 flex justify-between items-center text-[40px] md:text-64px font-serif relative">
-            <h2 className="">Serene</h2>
-            <GradientBall />
-            <div className="w-[50px] h-[50px] rounded-full bg-black"></div>
+        <header className="w-full h-[60px] px-8 flex justify-between items-center text-[40px] md:text-64px relative">
+            <a href="/" className="font-serif">Serene</a>
+            <a href="/dashboard"><GradientBall /></a>
+            <a href="/authorize/twitter"><div className="w-[50px] h-[50px] rounded-full bg-black"></div></a>
         </header>
     );
 }
