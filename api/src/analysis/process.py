@@ -3,8 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import nlp
 import random
-import os
-
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 def show_history(h):
     epochs_trained = len(h.history['loss'])
     plt.figure(figsize=(16, 6))
@@ -117,6 +116,10 @@ ids_to_labels = lambda ids: np.array([index_to_class.get(x) for x in ids])
 train_labels = labels_to_ids(labels)
 train_labels[50]
 
+def get_sentiment_score(text):
+    analyzer = SentimentIntensityAnalyzer()
+    sentiment_dict = analyzer.polarity_scores(text)
+    return sentiment_dict['compound']
 def create_model():
     model = tf.keras.Sequential([
         tf.keras.layers.Embedding(10000, 16, input_length=maxlen),
@@ -142,7 +145,6 @@ def predict_emotion_probability(model, sequences, i):
     intensity = p[pred_class_index]
     return intensity
 
-
 #show_confusion_matrix(test_labels, classes_x, list(classes))
 
 def main():
@@ -160,21 +162,25 @@ def main():
          ]
     )
 
-    test_tweets, test_labels = get_tweet(test)
+
+    test_tweets = get_tweet_without_labels(test)
     test_sequences = get_sequences(tokenizer, test_tweets)
-    test_labels = labels_to_ids(test_labels)
-    _ = model.evaluate(test_sequences, test_labels)
+    #test_labels = labels_to_ids(test_labels)
+    _ = model.evaluate(test_sequences)
 
     predict_x = model.predict(test_sequences)
     classes_x = np.argmax(predict_x, axis=1)
 
     for _ in range(5):
-        i = random.randint(0, len(test_labels) - 1)
-        print("Tweet : ", test_tweets[i], " ==> label : ", index_to_class[test_labels[i]])
+        i = random.randint(0, len(test_tweets) - 1)
+        #print("Tweet : ", test_tweets[i], " ==> label : ", index_to_class[test_labels[i]])
+        print("Tweet : ", test_tweets[i])
+        intensity_score = abs(get_sentiment_score(test_tweets[i]))
         pred_class = predict_emotion(model, test_sequences, index_to_class, i)
         pred_intensity = predict_emotion_probability(model, test_sequences, i)
         print("predicted label : ", pred_class)
         print("intensity or probability of emotion: {:.2f}".format(pred_intensity))
+        print("sentiment score from VADER: ", intensity_score)
         print("-----------------------\n")
 
 
