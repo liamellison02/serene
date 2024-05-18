@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import nlp
 import random
+import os
 
 def show_history(h):
     epochs_trained = len(h.history['loss'])
@@ -54,15 +55,16 @@ test = pd.read_csv(
     "dataset/test.txt",
     sep=";",
     names=["text", "label"])
-
-print('Using TensorFlow version', tf.__version__)
-
 train.head()
 
 def get_tweet(data):
     tweets = data["text"]
     labels = data["label"]
     return tweets, labels
+
+def get_tweet_without_labels(data):
+    tweets = data["text"]
+    return tweets
 
 tweets, labels = get_tweet(train)
 
@@ -84,31 +86,14 @@ def data_description(data):
     print(label_count)
     plt.show()
 
-"""max_length = 50
-vectorizer = layers.TextVectorization(max_tokens=10000, output_sequence_length=max_length, pad_to_max_tokens=True,
-        output_mode='int', oov_token='<UNK>')
-        vectorizer.adapt(tweets)
-        lengths = [len(tweet.split()) for tweet in tweets]
-        plt.hist(lengths, bins=len(set(lengths)))
-        plt.show()
-
-        def get_sequences(vectorizer, tweets):
-            sequences = vectorizer(tweets)
-            return sequences
-        padded_train_sequences = get_sequences(vectorizer, tweets)
-
-        lengths = [len(l) for l in padded_train_sequences]
-        plt.hist(lengths)
-        plt.show()"""
-
 
 from tensorflow.keras.preprocessing.text import Tokenizer
 tokenizer = Tokenizer(num_words=10000, oov_token="<UNK>")
 tokenizer.fit_on_texts(tweets)
 
 lengths = [len(s.split()) for s in tweets]
-plt.hist(lengths, bins=len(set(lengths)))
-plt.show()
+"""plt.hist(lengths, bins=len(set(lengths)))
+plt.show()"""
 
 maxlen = 50
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -120,8 +105,8 @@ def get_sequences(tokenizer, tweets):
 padded_train_sequences = get_sequences(tokenizer, tweets)
 padded_train_sequences[50]
 lengths = [len(l) for l in padded_train_sequences]
-plt.hist(lengths)
-plt.show()
+"""plt.hist(lengths)
+plt.show()"""
 
 classes = set(labels)
 class_to_index = dict((c, i) for i, c in enumerate(classes))
@@ -132,50 +117,66 @@ ids_to_labels = lambda ids: np.array([index_to_class.get(x) for x in ids])
 train_labels = labels_to_ids(labels)
 train_labels[50]
 
-model = tf.keras.Sequential([
-    tf.keras.layers.Embedding(10000, 16, input_length=maxlen),
+def create_model():
+    model = tf.keras.Sequential([
+        tf.keras.layers.Embedding(10000, 16, input_length=maxlen),
         tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(20, return_sequences=True)),
         tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(20)),
         tf.keras.layers.Dense(6, activation='softmax')
-        ])
-model.compile(
-    loss='sparse_categorical_crossentropy',
-    optimizer='adam',
-    metrics=['accuracy']
-)
-model.summary()
+    ])
+    model.compile(
+        loss='sparse_categorical_crossentropy',
+        optimizer='adam',
+        metrics=['accuracy']
+    )
+    return model
 
-val_tweets, val_labels = get_tweet(val)
-val_sequences = get_sequences(tokenizer, val_tweets)
-val_labels = labels_to_ids(val_labels)
-val_tweets[69], val_labels[69]
+def predict_emotion(model, sequences, index_to_class,i):
+    p = model.predict(np.expand_dims(sequences[i], axis=0))[0]
+    pred_class = index_to_class[np.argmax(p).astype('uint8')]
+    return pred_class
 
-m = model.fit(
-    padded_train_sequences,
-    train_labels,
-    validation_data=(val_sequences, val_labels),
-    epochs=20,
-    callbacks=[
-        tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=2)
-        ]
+def predict_emotion_probability(model, sequences, i):
+    p = model.predict(np.expand_dims(sequences[i], axis=0))[0]
+    pred_class_index = np.argmax(p)
+    intensity = p[pred_class_index]
+    return intensity
+
+
+#show_confusion_matrix(test_labels, classes_x, list(classes))
+
+def main():
+    model = create_model()
+    val_tweets, val_labels = get_tweet(val)
+    val_sequences = get_sequences(tokenizer, val_tweets)
+    val_labels = labels_to_ids(val_labels)
+    m = model.fit(
+        padded_train_sequences,
+        train_labels,
+        validation_data=(val_sequences, val_labels),
+        epochs=20,
+        callbacks=[
+         tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=2)
+         ]
     )
 
-test_tweets, test_labels = get_tweet(test)
-test_sequences = get_sequences(tokenizer, test_tweets)
-test_labels = labels_to_ids(test_labels)
-_ = model.evaluate(test_sequences, test_labels)
+    test_tweets, test_labels = get_tweet(test)
+    test_sequences = get_sequences(tokenizer, test_tweets)
+    test_labels = labels_to_ids(test_labels)
+    _ = model.evaluate(test_sequences, test_labels)
 
-"""for _ in range(5):
-    i = random.randint(0, len(test_labels) - 1)
-    print("Tweet : ", test_tweets[i], " ==> label : ", index_to_class[test_labels[i]])
-    p = model.predict(np.expand_dims(test_sequences[i], axis=0))[0]
-    pred_class = index_to_class[np.argmax(p).astype('uint8')]
-    print("predicted label : ", pred_class)
-    print("-----------------------")"""
+    predict_x = model.predict(test_sequences)
+    classes_x = np.argmax(predict_x, axis=1)
 
-predict_x = model.predict(test_sequences)
-classes_x = np.argmax(predict_x, axis=1)
+    for _ in range(5):
+        i = random.randint(0, len(test_labels) - 1)
+        print("Tweet : ", test_tweets[i], " ==> label : ", index_to_class[test_labels[i]])
+        pred_class = predict_emotion(model, test_sequences, index_to_class, i)
+        pred_intensity = predict_emotion_probability(model, test_sequences, i)
+        print("predicted label : ", pred_class)
+        print("intensity or probability of emotion: {:.2f}".format(pred_intensity))
+        print("-----------------------\n")
 
-show_confusion_matrix(test_labels, classes_x, list(classes))
 
-
+if __name__ == '__main__':
+    main()
