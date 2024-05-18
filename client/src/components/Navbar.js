@@ -49,8 +49,6 @@ const Navbar = () => {
             ))}
           </ul>
 
-
-          {/* menu button for small devices */}
           <button
             onClick={toggleMobileMenu}
             className="lg:hidden text-[#706cac] text-3xl "
@@ -59,7 +57,6 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* nav items for small devices */}
         {isMenuOpen && (
           <div className="items-end">
            <div className="absolute right-0 w-[110px] bg-[#F8F7F1] text-[#00297A] text-[20px] font-bold rounded py-4">
