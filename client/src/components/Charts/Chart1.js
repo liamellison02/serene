@@ -1,11 +1,24 @@
 import GetTweetData from "../GetTweetData";
 import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
 // Register components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 function Chart1() {
   const timeline_data = GetTweetData()["timeline_analysis_data"];
@@ -25,16 +38,16 @@ function Chart1() {
           timeline_data.Fear,
         ],
         backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
+          "rgba(255, 0, 0, 0.2)", // Red for Anger
+          "rgba(0, 128, 0, 0.2)", // Green for Joy
+          "rgba(128, 0, 128, 0.2)", // Purple for Sadness
+          "rgba(255, 165, 0, 0.2)", // Orange for Fear
         ],
         borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
+          "rgba(255, 0, 0, 1)", // Red for Anger
+          "rgba(0, 128, 0, 1)", // Green for Joy
+          "rgba(128, 0, 128, 1)", // Purple for Sadness
+          "rgba(255, 165, 0, 1)", // Orange for Fear
         ],
         borderWidth: 1,
       },
