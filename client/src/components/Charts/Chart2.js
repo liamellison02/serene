@@ -76,12 +76,7 @@ function Chart2() {
       },
       {
         label: "Fear",
-        data: [
-          0, 
-          0, 
-          0, 
-          overall_data.overall_weighted_fear || 0,
-        ],
+        data: [0, 0, 0, overall_data.overall_weighted_fear || 0],
         backgroundColor: "rgba(75, 192, 192, 0.2)", // Green
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 2,
@@ -92,19 +87,38 @@ function Chart2() {
   };
 
   return (
-    <div className="w-[300px] h-[300px] m-10 bg--500">
-      <h1 className="font-bold">Chart #2</h1>
-      <div>
-        <h2>Overall Emotion Intensity</h2>
-        <Line data={chartData} />
+    <div className="w-[400px] h-[450px] m-10 bg-gray-200 p-6 rounded-lg shadow-md">
+      <h1 className="text-xl font-bold mb-4">Chart #2</h1>
+      <div className="mb-4">
+        <h2 className="text-lg font-semibold mb-2">
+          Overall Emotion Intensity
+        </h2>
+        <div className="bg-white p-4 rounded-lg shadow-md">
+          <Line data={chartData} />
+        </div>
       </div>
-      <p>overall Tweets: {overall_data["num_overall_tweets"]}</p>
-      <p>overall prominent emotion: {overall_data["overall_weighted_anger"]}</p>
-      <p>overall weighted anger: {overall_data["overall_weighted_sadness"]}</p>
-      <p>
-        overall weighted sadness: {overall_data["overall_weighted_sadness"]}
-      </p>
-      <p>overall weighted joy: {overall_data["timeline_weighted_joy"]}</p>
+      <div className="text-sm text-gray-600">
+        <p>
+          <span className="font-bold">Overall Tweets:</span>{" "}
+          {overall_data["num_overall_tweets"]}
+        </p>
+        <p>
+          <span className="font-bold">Overall Prominent Emotion:</span>{" "}
+          {overall_data["overall_most_prominent_emotion"]}
+        </p>
+        <p>
+          <span className="font-bold">Overall Weighted Anger:</span>{" "}
+          {overall_data["overall_weighted_anger"]}
+        </p>
+        <p>
+          <span className="font-bold">Overall Weighted Sadness:</span>{" "}
+          {overall_data["overall_weighted_sadness"]}
+        </p>
+        <p>
+          <span className="font-bold">Overall Weighted Joy:</span>{" "}
+          {overall_data["overall_weighted_joy"]}
+        </p>
+      </div>
     </div>
   );
 }
