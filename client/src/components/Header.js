@@ -9,7 +9,7 @@ function GradientBall() {
         <div id="Emotions" className="flex justify-center items-center">
             <div id="circle" className="w-[50px] h-[50px] rounded-full" style={gradient}>
             </div>
-            <p className="ml-4 hidden md:block text-[20px]">Looking Good 😎</p>
+            <p className="ml-4 hidden md:block text-[20px]">Happy 😄</p>
         </div>
     );
 }
@@ -22,7 +22,7 @@ function Header() {
       <div className="relative group">
         <a href="/authorize/twitter" className="relative">
           <img src={logo} alt="logo" className="w-[50px] h-[50px] rounded-full border-black border-[3px]" />
-          <span className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-max bg-black text-white text-center text-sm rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+          <span className="absolute top-full left-[-16px] transform -translate-x-1/2 mt-2 w-max bg-black text-white text-center text-sm rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
             Login with Twitter
           </span>
         </a>
