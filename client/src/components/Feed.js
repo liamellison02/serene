@@ -17,7 +17,7 @@ function Feed() {
     const tweets = [...user_tweets, ...timeline_tweets];
 
     return (
-        <div id="feed" className="w-[85%] md:w-[600px] h-full overflow-scroll">
+        <div id="feed" className="w-[85%] md:w-[600px] h-full overflow-y-scroll overflow-x-hidden">
             {tweets.map((tweet, index) => (
                 <div key={index}>
                     <Tweet user={tweet.user} text={tweet.text} date={tweet.date}/>
