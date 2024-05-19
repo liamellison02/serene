@@ -1,9 +1,12 @@
 import { Feed } from "../components"
+import { Chart1, CurveGraph } from "../components/Charts"
 
 function Home() {
 	return (
-		<div id="HomePage" className="w-full h-full flex justify-center align-middle">
+		<div id="HomePage" className="w-full h-full flex justify-around items-center">
+			<div className="w-[20%] h-[40%] hidden lg:block"><CurveGraph /></div>
 			<Feed />
+			<div className="w-[20%] h-[40%] hidden lg:block"><Chart1 /></div>
 		</div>
 	);
 }

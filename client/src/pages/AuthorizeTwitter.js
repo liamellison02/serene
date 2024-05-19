@@ -1,12 +1,22 @@
+const axios = require('axios');
+
 function AuthorizeTwitter() {
-    const handleTwitterLogin = () => {
-        window.location.href = 'https://api.twitter.com/oauth/authenticate?oauth_token=YOUR_OAUTH_TOKEN';
+
+    const getTwitterAuthLink = async () => {
+        try {
+            const response = await axios.get('/auth/twitter');
+            const authLink = response.data;
+            window.location.href = authLink;
+        } catch (error) {
+            console.error('Failed to get Twitter auth link:', error);
+        }
     };
+
+    getTwitterAuthLink();
 
     return (
         <div id="AuthorizeTwitter" className="h-[300px] flex flex-col justify-center items-center">
-            <h1 className="">This page will authorize the user with twitter</h1>
-            <button id="twitter-login" onClick={handleTwitterLogin} className="h-[20px] bg-slate-300 p-5 border border-black">Login with Twitter</button>
+            <h1 className="">Redirecting you to twitter...</h1>
         </div>
     );
 
