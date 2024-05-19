@@ -1,11 +1,12 @@
 import React from "react";
 import GetTweetData from "../GetTweetData";
-import { Bar } from "react-chartjs-2";
+import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
@@ -16,41 +17,44 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend
 );
 
 function Chart1() {
-  const timeline_data = GetTweetData()["timeline_analysis_data"];
-  console.log(timeline_data);
+  const data = GetTweetData();
+  const hasUserData = data.has_user_data;
+  const timelineData = data.timeline_analysis_data;
+  const userData = data.user_and_analysis_data;
+
+  console.log(timelineData, "timeline data");
 
   // Handle missing data
-  if (!timeline_data) {
+  if (!timelineData) {
     return <p>Loading data...</p>;
   }
+
   const chartData = {
-    labels: ["Anger", "Joy", "Sadness", "Fear"],
+    labels: ["Anger", "Joy", "Sadness"],
     datasets: [
       {
         label: "Emotion Intensity",
         data: [
-          timeline_data.anger,
-          timeline_data.joy,
-          timeline_data.sadness,
-          timeline_data.Fear,
+          timelineData.timeline_weighted_anger,
+          timelineData.timeline_weighted_joy,
+          timelineData.timeline_weighted_sadness,
         ],
         backgroundColor: [
           "rgba(255, 0, 0, 0.2)", // Red for Anger
           "rgba(0, 128, 0, 0.2)", // Green for Joy
           "rgba(128, 0, 128, 0.2)", // Purple for Sadness
-          "rgba(255, 165, 0, 0.2)", // Orange for Fear
         ],
         borderColor: [
           "rgba(255, 0, 0, 1)", // Red for Anger
           "rgba(0, 128, 0, 1)", // Green for Joy
           "rgba(128, 0, 128, 1)", // Purple for Sadness
-          "rgba(255, 165, 0, 1)", // Orange for Fear
         ],
         borderWidth: 1,
       },
@@ -64,31 +68,55 @@ function Chart1() {
           Overall Emotion Intensity
         </h2>
         <div className="bg-white p-4 rounded-lg shadow-md">
-          <Bar data={chartData} />
+          <Pie data={chartData} />
         </div>
       </div>
       <div className="text-sm text-gray-600">
         <p>
           <span className="font-bold">Num Tweets:</span>{" "}
-          {timeline_data["num_timeline_tweets"]}
+          {timelineData.num_timeline_tweets}
         </p>
         <p>
           <span className="font-bold">Most prominent emotion:</span>{" "}
-          {timeline_data["timeline_most_prominent_emotion"]}
+          {timelineData.timeline_most_prominent_emotion}
         </p>
         <p>
           <span className="font-bold">Timeline weighted anger:</span>{" "}
-          {timeline_data["timeline_weighted_anger"]}
+          {timelineData.timeline_weighted_anger}
         </p>
         <p>
           <span className="font-bold">Timeline weighted sadness:</span>{" "}
-          {timeline_data["timeline_weighted_sadness"]}
+          {timelineData.timeline_weighted_sadness}
         </p>
         <p>
           <span className="font-bold">Timeline weighted joy:</span>{" "}
-          {timeline_data["timeline_weighted_joy"]}
+          {timelineData.timeline_weighted_joy}
         </p>
       </div>
+      {hasUserData && userData && (
+        <div className="text-sm text-gray-600">
+          <p>
+            <span className="font-bold">User Tweets:</span>{" "}
+            {userData.num_user_tweets}
+          </p>
+          <p>
+            <span className="font-bold">User prominent emotion:</span>{" "}
+            {userData.user_most_prominent_emotion}
+          </p>
+          <p>
+            <span className="font-bold">User weighted anger:</span>{" "}
+            {userData.user_weighted_anger}
+          </p>
+          <p>
+            <span className="font-bold">User weighted sadness:</span>{" "}
+            {userData.user_weighted_sadness}
+          </p>
+          <p>
+            <span className="font-bold">User weighted joy:</span>{" "}
+            {userData.user_weighted_joy}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
