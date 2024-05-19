@@ -1,66 +1,12 @@
 import React from "react";
 import GetTweetData from "../GetTweetData";
-import { Pie } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-// Register components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
 function Chart1() {
-  const data = GetTweetData();
-  const hasUserData = data.has_user_data;
-  const timelineData = data.timeline_analysis_data;
-  const userData = data.user_and_analysis_data;
+  
+  const timeline_data = GetTweetData()["timeline_analysis_data"];
 
-  console.log(timelineData, "timeline data");
-
-  // Handle missing data
-  if (!timelineData) {
-    return <p>Loading data...</p>;
-  }
-
-  const chartData = {
-    labels: ["Anger", "Joy", "Sadness"],
-    datasets: [
-      {
-        label: "Emotion Intensity",
-        data: [
-          timelineData.timeline_weighted_anger,
-          timelineData.timeline_weighted_joy,
-          timelineData.timeline_weighted_sadness,
-        ],
-        backgroundColor: [
-          "rgba(255, 0, 0, 0.2)", // Red for Anger
-          "rgba(0, 128, 0, 0.2)", // Green for Joy
-          "rgba(128, 0, 128, 0.2)", // Purple for Sadness
-        ],
-        borderColor: [
-          "rgba(255, 0, 0, 1)", // Red for Anger
-          "rgba(0, 128, 0, 1)", // Green for Joy
-          "rgba(128, 0, 128, 1)", // Purple for Sadness
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
   return (
+<<<<<<< HEAD
     <div className="w-[400px] h-[650px] m-10 bg-gray-200 p-6 rounded-lg shadow-md ">
       <h1 className="text-xl font-bold mb-4">Chart #1</h1>
       <div className="mb-4">
@@ -117,6 +63,15 @@ function Chart1() {
           </p>
         </div>
       )}
+=======
+    <div className="w-full h-full rounded-lg bg-red-200 p-6 overflow-y-scroll">
+      <h1 className="text-xl mb-4">Quick Timeline Info</h1>
+      <p># Tweets: <b>{timeline_data["num_timeline_tweets"]}</b></p>
+      <p>Overall Emotion: <b>{timeline_data["timeline_most_prominent_emotion"]}</b></p>
+      <p>Anger Score: <b>{timeline_data["timeline_weighted_anger"]}</b></p>
+      <p>Sadness Score: <b>{timeline_data["timeline_weighted_sadness"]}</b></p>
+      <p>Joy Score: <b>{timeline_data["timeline_weighted_joy"]}</b></p>
+>>>>>>> d23ede6c6a8ae6b6bd9caf02c2879d8c272b1c33
     </div>
   );
 }
