@@ -1,28 +1,8 @@
 import GetTweetData from "../GetTweetData";
 import { Line } from "react-chartjs-2";
-import {
-  Chart,
-  registerables,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import { Chart as ChartJS, LineElement, PointElement, LinearScale, Title, Tooltip, Legend, CategoryScale } from 'chart.js';
 
-// Register ChartJS components
-Chart.register(
-  ...registerables,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, Legend, CategoryScale);
 
 function Chart2() {
   const data = GetTweetData();

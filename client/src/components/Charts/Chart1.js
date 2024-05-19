@@ -1,4 +1,3 @@
-import React from "react";
 import GetTweetData from "../GetTweetData";
 import { Pie } from "react-chartjs-2";
 import {
