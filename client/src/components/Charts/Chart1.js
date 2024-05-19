@@ -57,23 +57,38 @@ function Chart1() {
     ],
   };
   return (
-    <div className="w-[300px] h-[300px] m-10 bg-white-500">
-      <h1 className="font-bold">Chart #1</h1>
-      <div>
-        <h2>Overall Emotion Intensity</h2>
-        <Bar data={chartData} />
+    <div className="w-[400px] h-[450px] m-10 bg-gray-200 p-6 rounded-lg shadow-md">
+      <h1 className="text-xl font-bold mb-4">Chart #1</h1>
+      <div className="mb-4">
+        <h2 className="text-lg font-semibold mb-2">
+          Overall Emotion Intensity
+        </h2>
+        <div className="bg-white p-4 rounded-lg shadow-md">
+          <Bar data={chartData} />
+        </div>
       </div>
-
-      <p>Num Tweets: {timeline_data["num_timeline_tweets"]}</p>
-      <p>
-        Most prominent emotion:{" "}
-        {timeline_data["timeline_most_prominent_emotion"]}
-      </p>
-      <p>Timeline weighted anger: {timeline_data["timeline_weighted_anger"]}</p>
-      <p>
-        Timeline weighted sadness: {timeline_data["timeline_weighted_sadness"]}
-      </p>
-      <p>Timeline weighted joy: {timeline_data["timeline_weighted_joy"]}</p>
+      <div className="text-sm text-gray-600">
+        <p>
+          <span className="font-bold">Num Tweets:</span>{" "}
+          {timeline_data["num_timeline_tweets"]}
+        </p>
+        <p>
+          <span className="font-bold">Most prominent emotion:</span>{" "}
+          {timeline_data["timeline_most_prominent_emotion"]}
+        </p>
+        <p>
+          <span className="font-bold">Timeline weighted anger:</span>{" "}
+          {timeline_data["timeline_weighted_anger"]}
+        </p>
+        <p>
+          <span className="font-bold">Timeline weighted sadness:</span>{" "}
+          {timeline_data["timeline_weighted_sadness"]}
+        </p>
+        <p>
+          <span className="font-bold">Timeline weighted joy:</span>{" "}
+          {timeline_data["timeline_weighted_joy"]}
+        </p>
+      </div>
     </div>
   );
 }
