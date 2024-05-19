@@ -5,17 +5,41 @@ import { useState, useEffect } from "react";
 
 function GradientBall() {
   const [overallFeeling, setOverallFeeling] = useState("unknown");
+  const [gradient, setGradient] = useState({
+    background: "linear-gradient(45deg, #6DC543 0%, #F37C7C 150%)",
+  });
 
   useEffect(() => {
     const data = GetTweetData();
     const overallFeeling =
       data.timeline_analysis_data.timeline_most_prominent_emotion;
     setOverallFeeling(overallFeeling);
+
+  // Set gradient colors based on the feelings
+    switch (overallFeeling) {
+      case "joy":
+        setGradient({
+          background: "linear-gradient(45deg, #FFD700 0%, #FFA500 100%)", // Yellow to Orange gradient for Joy
+        });
+        break;
+      case "anger":
+        setGradient({
+          background: "linear-gradient(45deg, #FF6347 0%, #FF4500 100%)", // Red to Orange gradient for Anger
+        });
+        break;
+      case "sadness":
+        setGradient({
+          background: "linear-gradient(45deg, #87CEEB 0%, #4682B4 100%)", // Sky Blue to Steel Blue gradient for Sadness
+        });
+        break;
+      default:
+        setGradient({
+          background: "linear-gradient(45deg, #6DC543 0%, #F37C7C 150%)", // Default gradient
+        });
+        break;
+    }
   }, []);
 
-  const gradient = {
-    background: "linear-gradient(45deg, #6DC543 0%, #F37C7C 150%)",
-  };
 
   return (
     <div className="flex items-center"> 
