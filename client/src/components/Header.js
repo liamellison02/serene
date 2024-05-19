@@ -9,7 +9,7 @@ function GradientBall() {
   useEffect(() => {
     const data = GetTweetData();
     const overallFeeling =
-      data.overall_analysis_data.overall_most_prominent_emotion;
+      data.timeline_analysis_data.timeline_most_prominent_emotion;
     setOverallFeeling(overallFeeling);
   }, []);
 
