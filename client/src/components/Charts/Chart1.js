@@ -1,3 +1,4 @@
+import React from "react";
 import GetTweetData from "../GetTweetData";
 import { Pie } from "react-chartjs-2";
 import {
@@ -60,13 +61,13 @@ function Chart1() {
     ],
   };
   return (
-    <div className="w-[400px] h-[450px] m-10 bg-gray-200 p-6 rounded-lg shadow-md">
+    <div className="w-[400px] h-[650px] m-10 bg-gray-200 p-6 rounded-lg shadow-md ">
       <h1 className="text-xl font-bold mb-4">Chart #1</h1>
       <div className="mb-4">
         <h2 className="text-lg font-semibold mb-2">
           Overall Emotion Intensity
         </h2>
-        <div className="bg-white p-4 rounded-lg shadow-md">
+        <div className="bg-white p-4 rounded-lg shadow-md flex justify-center items-center">
           <Pie data={chartData} />
         </div>
       </div>
