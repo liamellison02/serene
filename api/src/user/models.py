@@ -8,8 +8,7 @@ import urllib.parse
 import urllib.request
 import urllib.error
 import json
-
-
+import pandas as pd
 request_token_url = 'https://api.twitter.com/oauth/request_token'
 access_token_url = 'https://api.twitter.com/oauth/access_token'
 authorize_url = 'https://api.twitter.com/oauth/authorize'
@@ -68,25 +67,34 @@ class User:
 
         return jsonify({"error": "Invalid login credentials"}), 401
 
+    def get_column_data(self,csv_file_path, column_name):
+        df = pd.read_excel(csv_file_path)
+        df = df.to_csv('output.csv', index=False)
+        return df[column_name].tolist()
+
     def getTweetData(self):
         if self.is_authenticated:
             sent_analysis_obj = process_class.TweetSentimentAnalyzer("dataset/train.txt", "dataset/val.txt","dataset/test.txt")
             user = db.users.find_one({"username": request.json['username']})
             twitter_id = user['user_id']
+            id_data = self.get_column_data('Datafield.xlsx','B')
+            date_data = self.get_column_data('Datafield.xlsx', 'C')
+            user_data = self.get_column_data('Datafield.xlsx', 'E')
+            text_data = self.get_column_data('Datafield.xlsx', 'F')
             user_tweets_from_api = [
                  {
-                     "id": 343434,
-                     "date": "2020-02-28",
-                     "user": "liamellisonrocks",
-                     "text": "man i love to code"
+                     "id": id_data,
+                     "date": date_data,
+                     "user": user_data,
+                     "text": text_data
                  }
              ]
             timeline_tweets_from_api = [
                  {
-                     "id": 323423334,
-                     "date": "2023-02-01",
-                     "user": "elonmusk",
-                     "text": "i own twitter"
+                     "id": id_data,
+                     "date": date_data,
+                     "user": user_data,
+                     "text": text_data
                   }
              ]
             overall_results_dict, pertweet_sentiment_result = sent_analysis_obj.main(user_tweets_from_api,timeline_tweets_from_api)
@@ -96,4 +104,4 @@ class User:
             user_analysis_data = (overall_results, predicted_sentiment_pertweet)
 
             # store tweet dict into database
-            # return jsonify(tweet_data), 200
+            return jsonify(user_analysis_data), 200
