@@ -18,15 +18,16 @@ function GradientBall() {
   };
 
   return (
-    <div className="flex items-center"> 
+    <div className="flex items-center">
       <div className="flex items-center mr-2"> {/* Wrap the icon and gradient ball in a flex container */}
-        <div className="w-[50px] h-[50px] rounded-full mr-2" style={gradient}>
-          {/* Render different icons based on the overall feeling */}
-          {overallFeeling === "joy" && <span role="img" aria-label="Joy">😄</span>}
-          {overallFeeling === "anger" && <span role="img" aria-label="Anger">😠</span>}
-          {overallFeeling === "sadness" && <span role="img" aria-label="Sadness">😢</span>}
+        <div className="w-[46px] h-[46px] rounded-full mr-2" style={gradient}>
         </div>
-        <p className="text-[20px]">{overallFeeling.charAt(0).toUpperCase() + overallFeeling.slice(1)}</p>
+        <p className="text-[20px]">
+          {overallFeeling.charAt(0).toUpperCase() + overallFeeling.slice(1)}
+          {overallFeeling === "joy" && <span role="img" aria-label="Joy"> 😄</span>}
+          {overallFeeling === "anger" && <span role="img" aria-label="Anger"> 😠</span>}
+          {overallFeeling === "sadness" && <span role="img" aria-label="Sadness"> 😢</span>}
+        </p>
       </div>
     </div>
   );
@@ -34,7 +35,7 @@ function GradientBall() {
 
 function Header() {
   return (
-    <header className="w-full h-[60px] px-8 flex justify-between items-center text-[40px] md:text-64px relative">
+    <header className="w-full h-[60px] px-8 flex justify-between items-center text-[40px] md:text-64px absolute top-0 left-0">
       <a href="/" className="font-serif">
         Serene
       </a>
