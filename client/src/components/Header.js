@@ -44,9 +44,9 @@ function GradientBall() {
   return (
     <div className="flex items-center">
       <div className="flex items-center mr-2"> {/* Wrap the icon and gradient ball in a flex container */}
-        <div className="w-[46px] h-[46px] rounded-full mr-2" style={gradient}>
+        <div className="w-[50px] h-[50px] rounded-full mr-2" style={gradient}>
         </div>
-        <p className="text-[20px]">
+        <p className="text-[32px]">
           {overallFeeling.charAt(0).toUpperCase() + overallFeeling.slice(1)}
           {overallFeeling === "joy" && <span role="img" aria-label="Joy"> 😄</span>}
           {overallFeeling === "anger" && <span role="img" aria-label="Anger"> 😠</span>}
