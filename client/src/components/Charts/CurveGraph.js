@@ -27,14 +27,6 @@ Chart.register(
 function CurveGraph() {
     const timeline_data = GetTweetData()["timeline_analysis_data"];
 
-    const options = {
-        plugins: {
-          legend: {
-            display: false, // Hide the legend
-          },
-        },
-      };
-
     const chartData = {
         labels: ["Anger", "Joy", "Sadness"],
         datasets: [
@@ -82,7 +74,7 @@ function CurveGraph() {
 
     return (
         <div className="w-full h-full bg-slate-200 rounded-lg shadow-md flex justify-center items-center">
-            <Line data={chartData} options={options}/>
+            <Line data={chartData}/>
         </div>
     );
 }

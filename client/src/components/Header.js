@@ -16,7 +16,7 @@ function GradientBall() {
 
 function Header() {
     return (
-        <header className="w-full h-[60px] px-8 flex justify-between items-center text-[40px] md:text-64px relative">
+        <header className="w-full h-[60px] px-8 flex justify-between items-center text-[40px] md:text-64px absolute top-0 left-0">
       <a href="/" className="font-serif">Serene</a>
       <a href="/dashboard"><GradientBall /></a>
       <div className="relative group">

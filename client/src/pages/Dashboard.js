@@ -2,7 +2,7 @@ import { Chart1, Chart2, BarGraph, CurveGraph, PieGraph } from "../components/Ch
 
 function Dashboard() {
     return (
-        <div className="w-full h-full flex justify-evenly items-center flex-wrap">
+        <div className="w-full h-full pt-[60px] flex justify-evenly items-center flex-wrap">
             <div className="w-[300px] h-[300px]"><CurveGraph/></div>
             <div className="w-[300px] h-[300px]"><Chart1/></div>
             <div className="w-[300px] h-[300px]"><BarGraph/></div>
