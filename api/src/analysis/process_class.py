@@ -1,6 +1,5 @@
 import tensorflow as tf
 import numpy as np
-import matplotlib.pyplot as plt
 import random
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from tensorflow.keras.preprocessing.text import Tokenizer
@@ -35,9 +34,6 @@ class TweetSentimentAnalyzer:
         self.class_to_index = dict((c, i) for i, c in enumerate(self.classes))
         self.index_to_class = dict((value, key) for key, value in self.class_to_index.items())
 
-        self.train_labels = self.labels_to_ids(self.train_labels)
-        self.val_labels = self.labels_to_ids(self.val_labels)
-
         self.model = self.create_model()
 
     def load_data(self, path):
@@ -51,65 +47,10 @@ class TweetSentimentAnalyzer:
     def get_tweet_without_labels(self, data):
         return data["text"]
 
-    def data_description(self, data):
-        shape = data.shape
-        text_nulls = data["text"].isnull().sum()
-        label_nulls = data["label"].isnull().sum()
-        label_count = data["label"].value_counts()
-
-        plt.hist(data["label"])
-        plt.xlabel('emotions')
-        plt.ylabel('Frequency')
-        plt.title('data distribution')
-
-        print("data shape : ", shape)
-        print("null values in text field : ", text_nulls)
-        print("null values in label field : ", label_nulls)
-        print("label counts")
-        print(label_count)
-        plt.show()
-
     def get_sequences(self, tweets):
         sequences = self.tokenizer.texts_to_sequences(tweets)
         padded_sequences = pad_sequences(sequences, truncating='post', padding='post', maxlen=self.maxlen)
         return padded_sequences
-
-    def labels_to_ids(self, labels):
-        return np.array([self.class_to_index.get(x) for x in labels])
-
-    def ids_to_labels(self, ids):
-        return np.array([self.index_to_class.get(x) for x in ids])
-
-    def show_history(self, h):
-        epochs_trained = len(h.history['loss'])
-        plt.figure(figsize=(16, 6))
-
-        plt.subplot(1, 2, 1)
-        plt.plot(range(0, epochs_trained), h.history.get('accuracy'), label='Training')
-        plt.plot(range(0, epochs_trained), h.history.get('val_accuracy'), label='Validation')
-        plt.ylim([0., 1.])
-        plt.xlabel('Epochs')
-        plt.ylabel('Accuracy')
-        plt.legend()
-
-        plt.subplot(1, 2, 2)
-        plt.plot(range(0, epochs_trained), h.history.get('loss'), label='Training')
-        plt.plot(range(0, epochs_trained), h.history.get('val_loss'), label='Validation')
-        plt.xlabel('Epochs')
-        plt.ylabel('Loss')
-        plt.legend()
-        plt.show()
-
-    def show_confusion_matrix(self, y_true, y_pred):
-        cm = confusion_matrix(y_true, y_pred, normalize='true')
-
-        plt.figure(figsize=(8, 8))
-        sp = plt.subplot(1, 1, 1)
-        ctx = sp.matshow(cm)
-        plt.xticks(list(range(0, 6)), labels=self.classes)
-        plt.yticks(list(range(0, 6)), labels=self.classes)
-        plt.colorbar(ctx)
-        plt.show()
 
     def get_sentiment_score(self, text):
         sentiment_dict = self.analyzer.polarity_scores(text)
@@ -150,7 +91,6 @@ class TweetSentimentAnalyzer:
                 tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=2)
             ]
         )
-        #self.show_history(m)
 
     def evaluate_model(self):
         _ = self.model.evaluate(self.test_sequences)
