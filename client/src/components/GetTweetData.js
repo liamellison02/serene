@@ -9,7 +9,7 @@ function GetTweetData() {
             "timeline_tweet_data": [
                 {
                     "mood": "joy",
-                    "intensity": 0.3,
+                    "intensity": 0.8,
                     "user": "@SummoningSalt",
                     "text": "1 million views in 40 hours! Not bad for a 2 hour long video. Thanks so much everyone - super positive feedback on this one. More Tetris content in the future for sure.",
                     "date": "2024-12-30" /* YYYY-MM-DD */
@@ -32,11 +32,11 @@ function GetTweetData() {
             "timeline_analysis_data": {
                 "num_timeline_tweets": 200,
 
-                "timeline_weighted_anger": 63.5, //  The sum of (anger-intensity * confidence) for all timeline's angry tweets
+                "timeline_weighted_anger": 43.5, //  The sum of (anger-intensity * confidence) for all timeline's angry tweets
                 "timeline_weighted_sadness": 42.5, // The sum of (sadness-intensity * confidence) for all timeline's sad tweets
-                "timeline_weighted_joy": 42.5, // The sum of (joy-intensity * confidence) for all joyful timeline's tweets
+                "timeline_weighted_joy": 86.2, // The sum of (joy-intensity * confidence) for all joyful timeline's tweets
 
-                "timeline_most_prominent_emotion": "anger", // timeline's emotion with highest weighted score
+                "timeline_most_prominent_emotion": "joy", // timeline's emotion with highest weighted score
             },
 
             "user_tweet_data": [
@@ -65,11 +65,11 @@ function GetTweetData() {
 
             "user_and_analysis_data": {
                 "num_user_tweets": 10,
-                "user_weighted_anger": 63.5, //  The sum of (anger-intensity * confidence) for all user's angry tweets
-                "user_weighted_sadness": 42.5, // The sum of (sadness-intensity * confidence) for all user's sad tweets
-                "user_weighted_joy": 42.5, // The sum of (joy-intensity * confidence) for all joyful user's tweets
+                "user_weighted_anger": 22.5, //  The sum of (anger-intensity * confidence) for all user's angry tweets
+                "user_weighted_sadness": 63.5, // The sum of (sadness-intensity * confidence) for all user's sad tweets
+                "user_weighted_joy": 55.8, // The sum of (joy-intensity * confidence) for all joyful user's tweets
 
-                "user_most_prominent_emotion": "anger", // user's emotion with highest weighted score
+                "user_most_prominent_emotion": "sadness", // user's emotion with highest weighted score
 
                 /* 
                 For future: If emotion scores are above threshold then they are also included in most prominent emotions
