@@ -18,14 +18,16 @@ function GradientBall() {
   };
 
   return (
-    <div id="Emotions" className="flex justify-center items-center">
-      <div id="circle" className="w-[50px] h-[50px] rounded-full" style={gradient}>
-        {/* Render different icons based on the overall feeling */}
-        {overallFeeling === "joy" && <span role="img" aria-label="Joy">😄</span>}
-        {overallFeeling === "anger" && <span role="img" aria-label="Anger">😠</span>}
-        {overallFeeling === "sadness" && <span role="img" aria-label="Sadness">😢</span>}
+    <div className="flex items-center"> 
+      <div className="flex items-center mr-2"> {/* Wrap the icon and gradient ball in a flex container */}
+        <div className="w-[50px] h-[50px] rounded-full mr-2" style={gradient}>
+          {/* Render different icons based on the overall feeling */}
+          {overallFeeling === "joy" && <span role="img" aria-label="Joy">😄</span>}
+          {overallFeeling === "anger" && <span role="img" aria-label="Anger">😠</span>}
+          {overallFeeling === "sadness" && <span role="img" aria-label="Sadness">😢</span>}
+        </div>
+        <p className="text-[20px]">{overallFeeling.charAt(0).toUpperCase() + overallFeeling.slice(1)}</p>
       </div>
-      <p className="ml-4 hidden md:block text-[20px]">{overallFeeling.charAt(0).toUpperCase() + overallFeeling.slice(1)}</p>
     </div>
   );
 }
@@ -36,7 +38,7 @@ function Header() {
       <a href="/" className="font-serif">
         Serene
       </a>
-      <a href="/dashboard">
+      <a href="/dashboard" className="flex items-center">
         <GradientBall />
       </a>
       <div className="relative group">
