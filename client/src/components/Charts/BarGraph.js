@@ -43,8 +43,8 @@ function BarGraph() {
       {
         data: [
           timeline_data["timeline_weighted_anger"],
-          timeline_data["timeline_weighted_sadness"],
           timeline_data["timeline_weighted_joy"],
+          timeline_data["timeline_weighted_sadness"],
         ],
         backgroundColor: [
           "rgba(255, 0, 0, 0.2)", // Red for Anger
