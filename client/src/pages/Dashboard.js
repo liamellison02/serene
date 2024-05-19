@@ -1,4 +1,4 @@
-import { Chart1, Chart2, BarGraph, CurveGraph } from "../components/Charts"
+import { Chart1, Chart2, BarGraph, CurveGraph, PieGraph } from "../components/Charts"
 
 function Dashboard() {
     return (
@@ -7,6 +7,7 @@ function Dashboard() {
             <div className="w-[300px] h-[300px]"><Chart1/></div>
             <div className="w-[300px] h-[300px]"><BarGraph/></div>
             <div className="w-[300px] h-[300px]"><Chart2/></div>
+            <div className="w-[300px] h-[300px]"><PieGraph/></div>
         </div>
     );
 }
