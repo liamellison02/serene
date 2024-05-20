@@ -35,6 +35,9 @@ class TweetSentimentAnalyzer:
         self.index_to_class = dict((value, key) for key, value in self.class_to_index.items())
 
         self.model = self.create_model()
+        self.train_model()
+        self.evaluate_model()
+        self.predict()
 
     def load_data(self, path):
         return pd.read_csv(path, sep=";", names=["text", "label"])
@@ -144,9 +147,6 @@ class TweetSentimentAnalyzer:
             print("-----------------------\n")"""
 
     def main(self,tweetdict,timelinedict):
-        self.train_model()
-        self.evaluate_model()
-        self.predict()
         pertweet_sentiment_dict = self.calculate_sentiment_per_tweet(tweetdict)
         total_intensity_user = self.calculate_total_intensity(list(tweetdict["text"]))
         total_intensity_timeline = self.calculate_total_intensity(list(timelinedict["text"]))
