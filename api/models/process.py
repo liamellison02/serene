@@ -2,8 +2,8 @@ import tensorflow as tf
 import numpy as np
 import random
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
 from sklearn.metrics import confusion_matrix
 import pandas as pd
 
