@@ -1,4 +1,7 @@
 from api import create_app
+from dotenv import load_dotenv
+
+load_dotenv('./.env', override=True)
 
 app = create_app()
 
