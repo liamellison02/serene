@@ -1,8 +1,7 @@
 flask
-scikit-learn
 tensorflow==2.13.0
 numpy
 pandas
 oauth2
 vaderSentiment
-keras
+base64
