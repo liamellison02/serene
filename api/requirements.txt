@@ -2,6 +2,6 @@ flask
 tensorflow==2.13.0
 numpy
 pandas
-oauth2
 vaderSentiment
-base64
+requests
+requests_oauthlib

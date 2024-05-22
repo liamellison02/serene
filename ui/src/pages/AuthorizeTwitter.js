@@ -1,10 +1,9 @@
 const axios = require('axios');
 
 function AuthorizeTwitter() {
-
     const getTwitterAuthLink = async () => {
         try {
-            const response = await axios.get('/auth/twitter');
+            const response = await axios.get('/authorize/twitter');
             const authLink = response.data;
             window.location.href = authLink;
         } catch (error) {
