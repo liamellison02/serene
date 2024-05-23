@@ -32,7 +32,7 @@ RUN npm run build
 # Create the static directory inside /app
 RUN mkdir -p /app/client/build
 # Copy the React build output to the static directory inside /app
-RUN cp -r build/* /app/build
+RUN cp -r build/* /app/client/build
 
 # Change the working directory back to /app
 WORKDIR /app
