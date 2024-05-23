@@ -9,7 +9,6 @@ from flask import Blueprint, request, redirect, jsonify, session
 
 twitter_bp = Blueprint('twitter', __name__)
 
-REDIRECT_URI=os.environ['REDIRECT_URI']
 CLIENT_ID = os.environ['CLIENT_ID']
 CLIENT_KEY = os.environ['CLIENT_KEY']
 REDIRECT_URI = os.environ['REDIRECT_URI']
@@ -64,6 +63,10 @@ def process_user():
 
     user_id = user_info["data"]["id"]
     username = user_info["data"]["username"]
+    
+    current_authorized_usernames = ['kylekorversalt', 'ArmanD39467899', 'liamellison02']
+    if username.lower() not in current_authorized_usernames:
+        return jsonify(user_info)
     
     user_tweets = requests.request(
         "GET", 

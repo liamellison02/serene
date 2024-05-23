@@ -5,3 +5,4 @@ pandas
 vaderSentiment
 requests
 requests_oauthlib
+keras

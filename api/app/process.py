@@ -4,7 +4,6 @@ import random
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-from sklearn.metrics import confusion_matrix
 import pandas as pd
 
 
