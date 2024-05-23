@@ -72,13 +72,13 @@ def process_user():
         "GET", 
         API_USERS_ENDPOINT + user_id + USER_TWEETS_URL,
         headers={"Authorization": f'Bearer {token["access_token"]}'}, 
-        params={'max_results': 25}
+        params={'max_results': 10}
     ).json()
     user_timeline = requests.request(
         "GET", 
         API_USERS_ENDPOINT + user_id + USER_TIMELINE_URL,
         headers={"Authorization": f'Bearer {token["access_token"]}'},
-        params={'max_results': 25}
+        params={'max_results': 10}
     ).json()
 
     return jsonify(user_id, username, user_tweets, user_timeline)
