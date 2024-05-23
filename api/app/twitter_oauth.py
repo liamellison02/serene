@@ -5,15 +5,11 @@ import hashlib
 
 import requests
 from requests_oauthlib import OAuth2Session
-from flask import Blueprint, render_template, request, redirect, send_from_directory, jsonify, session
-
-from dotenv import load_dotenv
-
-load_dotenv('.\.env', override=True)
+from flask import Blueprint, request, redirect, jsonify, session
 
 twitter_bp = Blueprint('twitter', __name__)
 
-REDIRECT_URI='http://127.0.0.1:5000/callback'
+REDIRECT_URI=os.environ['REDIRECT_URI']
 CLIENT_ID = os.environ['CLIENT_ID']
 CLIENT_KEY = os.environ['CLIENT_KEY']
 REDIRECT_URI = os.environ['REDIRECT_URI']
@@ -33,7 +29,7 @@ code_challenge = code_challenge.replace("=", "")
 scopes = ['tweet.read', 'users.read', 'follows.read', 'follows.write']
                        
 
-@twitter_bp.route('/twitter')
+@twitter_bp.route('/authorize/twitter')
 def twitter_info():
     global twitter
     twitter = OAuth2Session(
@@ -74,18 +70,18 @@ def process_user():
         API_USERS_ENDPOINT + user_id + USER_TWEETS_URL,
         headers={"Authorization": f'Bearer {token["access_token"]}'}, 
         params={'max_results': 25}
-    )
+    ).json()
     user_timeline = requests.request(
         "GET", 
         API_USERS_ENDPOINT + user_id + USER_TIMELINE_URL,
         headers={"Authorization": f'Bearer {token["access_token"]}'},
         params={'max_results': 25}
-    )
+    ).json()
 
     return jsonify(user_id, username, user_tweets, user_timeline)
 
-@twitter_bp.route('/logout')
-def logout():
-    global oauth_store
-    oauth_store = {}
-    return redirect('/')
+# @twitter_bp.route('/logout')
+# def logout():
+#     global oauth_store
+#     oauth_store = {}
+#     return redirect('/')

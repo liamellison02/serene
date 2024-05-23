@@ -11,8 +11,8 @@ function App() {
 			<Routes>
 				<Route exact path="/" element={<Home />} />
 				<Route exact path="/dashboard" element={<Dashboard />} />
-				<Route exact path="/authorize/twitter" element={<AuthorizeTwitter />} />
-				<Route exact path="/callback" element={<Callback />} />
+				{/* <Route exact path="/authorize/twitter" element={<AuthorizeTwitter />} /> */}
+				{/* <Route exact path="/callback" element={<Callback />} /> */}
 			</Routes>
 		</BrowserRouter>
 	);
