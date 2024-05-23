@@ -14,17 +14,17 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN apt-get update && apt-get install -y nodejs npm
 
 # Copy the entire Flask app source code into the container's /app directory
-COPY . .
+COPY api .
 
 # Build the React app
 # Change the working directory to the client directory in the container
 WORKDIR /app/../client
 # Copy package.json and package-lock.json to the container's /client directory
-COPY ../client/package.json ../client/package-lock.json ./
+COPY client/package.json client/package-lock.json ./
 # Install npm dependencies
 RUN npm install
 # Copy all files from the client directory on the host to the container's /client directory
-COPY ../client ./
+COPY client ./
 # Build the React app
 RUN npm run build
 
