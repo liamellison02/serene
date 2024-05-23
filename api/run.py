@@ -1,5 +1,5 @@
 import os
-from flask import create_app
+from flaskapp import create_app
 
 app = create_app()
 app.secret_key = os.urandom(50)
