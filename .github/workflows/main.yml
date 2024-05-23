@@ -15,4 +15,5 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "sereneappdev" #Must be unique in Heroku
           heroku_email: "lellison6@student.gsu.edu"
+          team: "serene-team"
           usedocker: true

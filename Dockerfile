@@ -44,4 +44,4 @@ ENV TEST_PATH /app/flask/dataset/test.txt
 EXPOSE $PORT
 
 # Define the command to run the Flask app
-CMD ["sh", "-c", "python app.py"]
+CMD ["sh", "-c", "python run.py"]
