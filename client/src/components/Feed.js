@@ -14,7 +14,7 @@ function Feed({type}) {
     let tweets = [...GetTweetData()["user_tweet_data"], ...GetTweetData()["timeline_tweet_data"]];
 
     return (
-        <div id="feed" className="w-[85%] md:w-[33%] h-full overflow-y-scroll overflow-x-hidden">
+        <div id="feed" className="w-[85%] md:w-[66%] h-full overflow-y-scroll overflow-x-hidden">
             {tweets.map((tweet, index) => (
                 <div key={index}>
                     <Tweet user={tweet.user} text={tweet.text} date={tweet.date}/>
