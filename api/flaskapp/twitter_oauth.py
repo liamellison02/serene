@@ -7,6 +7,9 @@ import requests
 from requests_oauthlib import OAuth2Session
 from flask import Blueprint, request, redirect, jsonify, session
 
+from dotenv import load_dotenv
+load_dotenv()
+
 twitter_bp = Blueprint('twitter', __name__)
 
 CLIENT_ID = os.environ['CLIENT_ID']

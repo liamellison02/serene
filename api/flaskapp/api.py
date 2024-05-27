@@ -6,12 +6,14 @@ api_bp = Blueprint('api', __name__)
 def analyze():
     data = request.get_json()
     text = data['text']
+    id = data['id']
     model = current_app.config['sentiment_model']
-    sequence = model.get_sequences([text])[0]
-    sentiment = model.predict_emotion(sequence)
-    intensity = model.predict_emotion_probability(sequence)
-    return jsonify({
-        "text": text,
-        "sentiment": sentiment,
-        "intensity": intensity
-    })
+    tweets = []
+    sequence = model.get_sequences([text])
+    for i in range(len(sequence)):
+        sentiment = (model.predict_emotion(sequence[i]))
+        intensity = (model.predict_emotion_probability(sequence[i])) * model.get_sentiment_score(text[i])
+        tweet = {'ID': id[i], 'text': text[i], 'sentiment': sentiment, 'intensity': intensity}
+        tweets.extend(tweet)
+
+    return jsonify(tweets)

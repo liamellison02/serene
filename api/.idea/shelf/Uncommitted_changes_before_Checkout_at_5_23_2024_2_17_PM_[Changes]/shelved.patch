@@ -1,0 +1,35 @@
+Index: app/__init__.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import os\r\nfrom flask import Flask, send_from_directory\r\nfrom .api import api_bp\r\nfrom .twitter_oauth import twitter_bp\r\n# from .process import TweetSentimentAnalyzer\r\n\r\n\r\ndef create_app():\r\n    app = Flask(__name__, static_folder='build')\r\n    \r\n    app.register_blueprint(api_bp, url_prefix='/api')\r\n    app.register_blueprint(twitter_bp)\r\n\r\n    # Initialize and train the sentiment model\r\n    # train_path = os.environ.get('TRAIN_PATH')\r\n    # val_path = os.environ.get('VAL_PATH')\r\n    # test_path = os.environ.get('TEST_PATH')\r\n    # app.config['sentiment_model'] = TweetSentimentAnalyzer(train_path, val_path, test_path)\r\n    \r\n    @app.route('/', defaults={'path': ''})\r\n    @app.route('/<path:path>')\r\n    def serve(path):\r\n        if path != \"\" and os.path.exists(os.path.join(app.static_folder, path)):\r\n            return send_from_directory(app.static_folder, path)\r\n        else:\r\n            return send_from_directory(app.static_folder, 'index.html')\r\n\r\n    return app\r\n
+===================================================================
+diff --git a/app/__init__.py b/app/__init__.py
+--- a/app/__init__.py	
++++ b/app/__init__.py	
+@@ -2,7 +2,7 @@
+ from flask import Flask, send_from_directory
+ from .api import api_bp
+ from .twitter_oauth import twitter_bp
+-# from .process import TweetSentimentAnalyzer
++from .process import TweetSentimentAnalyzer
+ 
+ 
+ def create_app():
+@@ -10,12 +10,12 @@
+     
+     app.register_blueprint(api_bp, url_prefix='/api')
+     app.register_blueprint(twitter_bp)
+-
+     # Initialize and train the sentiment model
+-    # train_path = os.environ.get('TRAIN_PATH')
+-    # val_path = os.environ.get('VAL_PATH')
+-    # test_path = os.environ.get('TEST_PATH')
+-    # app.config['sentiment_model'] = TweetSentimentAnalyzer(train_path, val_path, test_path)
++    train_path = os.environ.get('TRAIN_PATH')
++    val_path = os.environ.get('VAL_PATH')
++    test_path = os.environ.get('TEST_PATH')
++    model = process.TweetSentimentAnalyzer(train_path, val_path, test_path)
++    app.config['sentiment_model'] = TweetSentimentAnalyzer(train_path, val_path, test_path)
+     
+     @app.route('/', defaults={'path': ''})
+     @app.route('/<path:path>')
