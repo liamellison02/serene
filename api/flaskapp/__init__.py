@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import os
 from flask import Flask, send_from_directory
 from .api import api_bp
@@ -20,6 +23,7 @@ def create_app():
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def serve(path):
+        print("Trying to serve from ", app.static_folder)
         if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
             return send_from_directory(app.static_folder, path)
         else:

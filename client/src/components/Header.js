@@ -1,4 +1,4 @@
-import Twitter from "../assets/Twitter.jpg";
+import Twitter from "../assets/Twitter.png";
 
 function TwitterIcon() {
   return (
