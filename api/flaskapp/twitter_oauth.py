@@ -7,6 +7,8 @@ import requests
 from requests_oauthlib import OAuth2Session
 from flask import Blueprint, request, redirect, jsonify, session
 
+from flaskapp import db
+
 twitter_bp = Blueprint('twitter', __name__)
 
 CLIENT_ID = os.environ['CLIENT_ID']
@@ -40,6 +42,7 @@ def twitter_info():
         AUTHORIZE_URL, code_challenge=code_challenge, code_challenge_method='S256'
     )
     session["oauth_state"] = state
+    
     
     return redirect(auth_url)
 
