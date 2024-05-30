@@ -2,8 +2,8 @@ import tensorflow as tf
 import numpy as np
 import random
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 import pandas as pd
 
 
@@ -32,11 +32,14 @@ class TweetSentimentAnalyzer:
         self.classes = set(self.train_labels)
         self.class_to_index = dict((c, i) for i, c in enumerate(self.classes))
         self.index_to_class = dict((value, key) for key, value in self.class_to_index.items())
+        self.train_labels = self.train_labels.map(self.class_to_index)
+        self.val_labels = self.val_labels.map(self.class_to_index)
 
         self.model = self.create_model()
         self.train_model()
         self.evaluate_model()
         self.predict()
+
 
     def load_data(self, path):
         return pd.read_csv(path, sep=";", names=["text", "label"])
