@@ -2,6 +2,7 @@ import os
 import re
 import base64
 import hashlib
+from bson.json_util import dumps
 
 import requests
 from requests_oauthlib import OAuth2Session
@@ -20,18 +21,20 @@ USER_TIMELINE_URL = os.environ['USER_TIMELINE_URL']
 USER_TWEETS_URL = os.environ['USER_TWEETS_URL']
 API_USERS_ENDPOINT = os.environ['API_USERS_ENDPOINT']
 
-code_verifier = base64.urlsafe_b64encode(os.urandom(30)).decode("utf-8")
-code_verifier = re.sub("[^a-zA-Z0-9]+", "", code_verifier)
 
-code_challenge = hashlib.sha256(code_verifier.encode("utf-8")).digest()
-code_challenge = base64.urlsafe_b64encode(code_challenge).decode("utf-8")
-code_challenge = code_challenge.replace("=", "")
 
 scopes = ['tweet.read', 'users.read', 'follows.read', 'follows.write']
                        
 
 @twitter_bp.route('/authorize/twitter')
 def twitter_info():
+    code_verifier = base64.urlsafe_b64encode(os.urandom(30)).decode("utf-8")
+    code_verifier = re.sub("[^a-zA-Z0-9]+", "", code_verifier)
+
+    code_challenge = hashlib.sha256(code_verifier.encode("utf-8")).digest()
+    code_challenge = base64.urlsafe_b64encode(code_challenge).decode("utf-8")
+    code_challenge = code_challenge.replace("=", "")
+
     global twitter
     twitter = OAuth2Session(
         client_id=CLIENT_ID,
@@ -42,7 +45,14 @@ def twitter_info():
         AUTHORIZE_URL, code_challenge=code_challenge, code_challenge_method='S256'
     )
     session["oauth_state"] = state
-    
+    db.session.insert_one(
+        {
+            "session_data": dumps(session), 
+            "code_challenge": code_challenge, 
+            "code_verifier": code_verifier,
+            "state": state
+        }
+    )
     
     return redirect(auth_url)
 
@@ -50,14 +60,18 @@ def twitter_info():
 @twitter_bp.route('/callback', methods=["GET"])
 def process_user():
     code = request.args.get('code')
-
+    state = request.args.get('state')
+    
+    session_data = db.session.find_one({"code_challenge": code, "state": state})
+    
     # for offline access, you would also need to call for a bearer token as well as an access token here
     token = twitter.fetch_token(
         token_url=ACCESS_TOKEN_URL,
         client_secret=CLIENT_KEY,
-        code_verifier=code_verifier,
+        code_verifier=session_data.get("code_verifier"),
         code=code
     )
+    # need to add an upsert of token data to session collection and user_data collection
     user_info = requests.request(
         "GET", 
         API_USERS_ENDPOINT + 'me',
@@ -84,7 +98,16 @@ def process_user():
         params={'max_results': 10}
     ).json()
 
-    return jsonify(user_id, username, user_tweets, user_timeline)
+    db.tweet_data.insert_one(
+        {
+            "username": username,
+            "user_id": user_id,
+            "user_timeline": user_timeline,
+            "user_tweets": user_tweets
+        }
+    )
+    return redirect("/dashboard")
+    # return jsonify(user_id, username, user_tweets, user_timeline)
 
 # @twitter_bp.route('/logout')
 # def logout():
