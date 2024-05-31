@@ -1,15 +1,14 @@
-import { Feed } from "../components"
-import { Chart1, BarGraph } from "../components/Charts"
+import { Feed, EmotionPreview } from "../components"
 
 function Home() {
 	return (
-		<div id="HomePage" className="w-full h-full pt-[60px] flex justify-around items-center">
-			<div className="w-[20%] hidden lg:block">
-				<div className="mb-8"><BarGraph/></div>
-				<Chart1 />
+		<div id="HomePage" className="w-full h-full flex flex-col md:flex-row justify-between items-center">
+			<div className="pl-[60px] w-[45%] h-full">
+				<Feed type="user" />
 			</div>
-			<Feed type="timeline" />
-			<Feed type="user" />
+			<div className="w-[35%] h-full fixed right-0 top-0">
+				<EmotionPreview />
+			</div>
 		</div>
 	);
 }
