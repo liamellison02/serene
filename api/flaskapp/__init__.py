@@ -1,6 +1,3 @@
-from dotenv import load_dotenv
-load_dotenv()
-
 import os
 from flask import Flask, send_from_directory
 from .api import api_bp
