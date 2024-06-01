@@ -85,18 +85,6 @@ class TweetSentimentAnalyzer:
         intensity = p[pred_class_index]
         return intensity
 
-    def calculate_sentiment_per_tweet(self,tweetdict):
-        predicted_sent_per_tweet = dict["tweet_id", "predicted_sentiment", "intensity_level"]
-        for tw_id, tweet in tweetdict['tweet_id', 'text']:
-            tweet_sequence = self.get_sequences(tweet)
-            predicted_sentiment = self.predict_emotion(tweet_sequence)
-            intensity = self.predict_emotion_probability(
-                tweet_sequence) * self.get_sentiment_score(tweet)
-            keys = ["tweet_id", "predicted_sentiment", "intensity_level"]
-            values = [tw_id, predicted_sentiment, intensity]
-            predicted_sent_per_tweet.update = {k: v for k, v in zip(keys, values)}
-        return predicted_sent_per_tweet
-
     def train_model(self):
         m = self.model.fit(
             self.padded_train_sequences,
