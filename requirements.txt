@@ -6,3 +6,4 @@ vaderSentiment
 requests
 requests_oauthlib
 keras
+pymongo
