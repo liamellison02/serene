@@ -1,0 +1,49 @@
+Index: app/twitter_oauth.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import os\r\nimport re\r\nimport base64\r\nimport hashlib\r\n\r\nimport requests\r\nfrom requests_oauthlib import OAuth2Session\r\nfrom flask import Blueprint, request, redirect, jsonify, session\r\n\r\ntwitter_bp = Blueprint('twitter', __name__)\r\n\r\nREDIRECT_URI=os.environ['REDIRECT_URI']\r\nCLIENT_ID = os.environ['CLIENT_ID']\r\nCLIENT_KEY = os.environ['CLIENT_KEY']\r\nREDIRECT_URI = os.environ['REDIRECT_URI']\r\nACCESS_TOKEN_URL = os.environ['ACCESS_TOKEN_URL']\r\nAUTHORIZE_URL = os.environ['AUTHORIZE_URL']\r\nUSER_TIMELINE_URL = os.environ['USER_TIMELINE_URL']\r\nUSER_TWEETS_URL = os.environ['USER_TWEETS_URL']\r\nAPI_USERS_ENDPOINT = os.environ['API_USERS_ENDPOINT']\r\n\r\ncode_verifier = base64.urlsafe_b64encode(os.urandom(30)).decode(\"utf-8\")\r\ncode_verifier = re.sub(\"[^a-zA-Z0-9]+\", \"\", code_verifier)\r\n\r\ncode_challenge = hashlib.sha256(code_verifier.encode(\"utf-8\")).digest()\r\ncode_challenge = base64.urlsafe_b64encode(code_challenge).decode(\"utf-8\")\r\ncode_challenge = code_challenge.replace(\"=\", \"\")\r\n\r\nscopes = ['tweet.read', 'users.read', 'follows.read', 'follows.write']\r\n                       \r\n\r\n@twitter_bp.route('/authorize/twitter')\r\ndef twitter_info():\r\n    global twitter\r\n    twitter = OAuth2Session(\r\n        client_id=CLIENT_ID,\r\n        scope=scopes,\r\n        redirect_uri=REDIRECT_URI\r\n    )\r\n    auth_url, state = twitter.authorization_url(\r\n        AUTHORIZE_URL, code_challenge=code_challenge, code_challenge_method='S256'\r\n    )\r\n    session[\"oauth_state\"] = state\r\n    \r\n    return redirect(auth_url)\r\n\r\n\r\n@twitter_bp.route('/callback', methods=[\"GET\"])\r\ndef process_user():\r\n    code = request.args.get('code')\r\n\r\n    # for offline access, you would also need to call for a bearer token as well as an access token here\r\n    token = twitter.fetch_token(\r\n        token_url=ACCESS_TOKEN_URL,\r\n        client_secret=CLIENT_KEY,\r\n        code_verifier=code_verifier,\r\n        code=code\r\n    )\r\n    user_info = requests.request(\r\n        \"GET\", \r\n        API_USERS_ENDPOINT + 'me',\r\n        headers={\"Authorization\": f'Bearer {token[\"access_token\"]}'}\r\n    ).json()\r\n\r\n    user_id = user_info[\"data\"][\"id\"]\r\n    username = user_info[\"data\"][\"username\"]\r\n    \r\n    user_tweets = requests.request(\r\n        \"GET\", \r\n        API_USERS_ENDPOINT + user_id + USER_TWEETS_URL,\r\n        headers={\"Authorization\": f'Bearer {token[\"access_token\"]}'}, \r\n        params={'max_results': 25}\r\n    ).json()\r\n    user_timeline = requests.request(\r\n        \"GET\", \r\n        API_USERS_ENDPOINT + user_id + USER_TIMELINE_URL,\r\n        headers={\"Authorization\": f'Bearer {token[\"access_token\"]}'},\r\n        params={'max_results': 25}\r\n    ).json()\r\n\r\n    return jsonify(user_id, username, user_tweets, user_timeline)\r\n\r\n# @twitter_bp.route('/logout')\r\n# def logout():\r\n#     global oauth_store\r\n#     oauth_store = {}\r\n#     return redirect('/')\r\n
+===================================================================
+diff --git a/app/twitter_oauth.py b/app/twitter_oauth.py
+--- a/app/twitter_oauth.py	
++++ b/app/twitter_oauth.py	
+@@ -6,6 +6,8 @@
+ import requests
+ from requests_oauthlib import OAuth2Session
+ from flask import Blueprint, request, redirect, jsonify, session
++from dotenv import load_dotenv
++load_dotenv()
+ 
+ twitter_bp = Blueprint('twitter', __name__)
+ 
+Index: app/__init__.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import os\r\nfrom flask import Flask, send_from_directory\r\nfrom .api import api_bp\r\nfrom .twitter_oauth import twitter_bp\r\n# from .process import TweetSentimentAnalyzer\r\n\r\n\r\ndef create_app():\r\n    app = Flask(__name__, static_folder='build')\r\n    \r\n    app.register_blueprint(api_bp, url_prefix='/api')\r\n    app.register_blueprint(twitter_bp)\r\n\r\n    # Initialize and train the sentiment model\r\n    # train_path = os.environ.get('TRAIN_PATH')\r\n    # val_path = os.environ.get('VAL_PATH')\r\n    # test_path = os.environ.get('TEST_PATH')\r\n    # app.config['sentiment_model'] = TweetSentimentAnalyzer(train_path, val_path, test_path)\r\n    \r\n    @app.route('/', defaults={'path': ''})\r\n    @app.route('/<path:path>')\r\n    def serve(path):\r\n        if path != \"\" and os.path.exists(os.path.join(app.static_folder, path)):\r\n            return send_from_directory(app.static_folder, path)\r\n        else:\r\n            return send_from_directory(app.static_folder, 'index.html')\r\n\r\n    return app\r\n
+===================================================================
+diff --git a/app/__init__.py b/app/__init__.py
+--- a/app/__init__.py	
++++ b/app/__init__.py	
+@@ -2,7 +2,7 @@
+ from flask import Flask, send_from_directory
+ from .api import api_bp
+ from .twitter_oauth import twitter_bp
+-# from .process import TweetSentimentAnalyzer
++from .process import TweetSentimentAnalyzer
+ 
+ 
+ def create_app():
+@@ -12,10 +12,10 @@
+     app.register_blueprint(twitter_bp)
+ 
+     # Initialize and train the sentiment model
+-    # train_path = os.environ.get('TRAIN_PATH')
+-    # val_path = os.environ.get('VAL_PATH')
+-    # test_path = os.environ.get('TEST_PATH')
+-    # app.config['sentiment_model'] = TweetSentimentAnalyzer(train_path, val_path, test_path)
++    tras.environ.get('TRAIN_PATH')
++    val_pathin_path = o = os.environ.get('VAL_PATH')
++    test_path = os.environ.get('TEST_PATH')
++    app.config['sentiment_model'] = TweetSentimentAnalyzer(train_path, val_path, test_path)
+     
+     @app.route('/', defaults={'path': ''})
+     @app.route('/<path:path>')
