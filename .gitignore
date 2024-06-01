@@ -1,7 +1,13 @@
 __pycache__/
 .idea/
+
+# virtual environment directory targets
 venv/
 .venv/
 env/
 .env/
 .env
+
+# excludes static react build folders
+api/flaskapp/client/
+client/build/
