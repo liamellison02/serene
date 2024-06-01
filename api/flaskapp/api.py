@@ -3,6 +3,10 @@ from flaskapp import db
 
 api_bp = Blueprint('api', __name__)
 
+def calculate_total_intensity(tweets):
+    total_intensity = {tweet['sentiment']: total_intensity.get(tweet['sentiment'], 0) + tweet['intensity'] for tweet in tweets}
+    return total_intensity
+
 @api_bp.route('/analyze', methods=['GET'])
 def analyze():
     user_id = request.args.get('user_id')
@@ -19,6 +23,11 @@ def analyze():
         intensity = model.predict_emotion_probability(sequence) * model.get_sentiment_score(user_text[i])
         user_tweets[i]['sentiment'] = sentiment
         user_tweets[i]['intensity'] = intensity
+    user_intensity_totals = calculate_total_intensity(user_tweets)
+    user_sent_data = {
+        'intensity_totals': user_intensity_totals,
+        'overall_sentiment': max(user_intensity_totals, key=user_intensity_totals.get)
+    }
     
     timeline_text = [tweet['text'] for tweet in user_timeline]
     timeline_sequences = model.get_sequences(timeline_text)
@@ -28,8 +37,15 @@ def analyze():
         intensity = model.predict_emotion_probability(sequence) * model.get_sentiment_score(timeline_text[i])
         user_timeline[i]['sentiment'] = sentiment
         user_timeline[i]['intensity'] = intensity
+    tl_intensity_totals = calculate_total_intensity(user_timeline)
+    tl_sent_data = {
+        'intensity_totals': tl_intensity_totals,
+        'overall_sentiment': max(tl_intensity_totals, key=tl_intensity_totals.get)
+    }
     
     return jsonify({
         "user_tweets": user_tweets,
-        "user_timeline": user_timeline
+        "user_sentiment_data": user_sent_data,
+        "user_timeline": user_timeline,
+        "timeline_sentiment_data": tl_sent_data
     })

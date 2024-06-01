@@ -40,7 +40,6 @@ class TweetSentimentAnalyzer:
         self.evaluate_model()
         self.predict()
 
-
     def load_data(self, path):
         return pd.read_csv(path, sep=";", names=["text", "label"])
 
@@ -80,8 +79,6 @@ class TweetSentimentAnalyzer:
         pred_class = self.index_to_class[np.argmax(p).astype('uint8')]
         return pred_class
 
-
-
     def predict_emotion_probability(self, sequence):
         p = self.model.predict(np.expand_dims(sequence, axis=0))[0]
         pred_class_index = np.argmax(p)
@@ -99,25 +96,6 @@ class TweetSentimentAnalyzer:
             values = [tw_id, predicted_sentiment, intensity]
             predicted_sent_per_tweet.update = {k: v for k, v in zip(keys, values)}
         return predicted_sent_per_tweet
-
-    def calculate_total_intensity(self, tweets):
-        total_intensity = {
-            'anger': 0,
-            'joy': 0,
-            'sadness': 0,
-            'fear': 0,
-            'surprise': 0,
-            'love': 0
-        }
-
-        for tweet in tweets:
-            tweet_sequence = self.get_sequences([tweet['text']])[0]
-            predicted_sentiment = self.predict_emotion(tweet_sequence)
-            intensity = self.predict_emotion_probability(tweet_sequence)
-
-            total_intensity[predicted_sentiment] += intensity
-
-        return total_intensity
 
     def train_model(self):
         m = self.model.fit(
