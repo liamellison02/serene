@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import { Chart1, Chart2, BarGraph, CurveGraph, PieGraph } from "../components/Charts"
 
 function Dashboard() {
@@ -8,15 +9,18 @@ function Dashboard() {
     const [user, setUser] = useState(null);
     const [userTweets, setUserTweets] = useState(null);
     const [timeline, setTimeline] = useState(null);
-    
+    const location = useLocation();
 
     useEffect(() => {
         // Fetch the results from the backend
-        fetch(`/api/results/${userId}`)
+        const params = new URLSearchParams(location.search);
+        userId = params.get('user_id');
+        fetch(`/api/analye/?user_id=${userId}`)
           .then(response => response.json())
           .then(data => {
-            setResults(data.results);
-            setUserTweets(data.tweets);
+            setResults(data.analysis_results);
+            setUserTweets(data.analysis_results["user_tweet_data"]);
+            setTimeline(data.analysis_results["timeline_tweet_data"]);
           })
           .catch(error => {
             console.error('Error:', error);

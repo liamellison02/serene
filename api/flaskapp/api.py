@@ -49,6 +49,6 @@ def analyze():
         "user_timeline": user_timeline,
         "timeline_sentiment_data": tl_sent_data
     }
-    
     db.user_twitter_data.insert_one(analysis_dict)
+    
     return jsonify()
