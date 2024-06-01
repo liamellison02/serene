@@ -6,7 +6,7 @@ from bson.json_util import dumps
 
 import requests
 from requests_oauthlib import OAuth2Session
-from flask import Blueprint, request, redirect, jsonify, session
+from flask import Blueprint, request, redirect, jsonify, session, url_for
 
 from flaskapp import db
 
@@ -98,7 +98,7 @@ def process_user():
         params={'max_results': 10}
     ).json()
 
-    db.tweet_data.insert_one(
+    db.users.insert_one(
         {
             "username": username,
             "user_id": user_id,
@@ -106,7 +106,7 @@ def process_user():
             "user_tweets": user_tweets
         }
     )
-    return redirect("/dashboard")
+    return redirect(url_for('dashboard', user_id))
     # return jsonify(user_id, username, user_tweets, user_timeline)
 
 # @twitter_bp.route('/logout')
