@@ -43,9 +43,12 @@ def analyze():
         'overall_sentiment': max(tl_intensity_totals, key=tl_intensity_totals.get)
     }
     
-    return jsonify({
+    analysis_dict = {
         "user_tweets": user_tweets,
         "user_sentiment_data": user_sent_data,
         "user_timeline": user_timeline,
         "timeline_sentiment_data": tl_sent_data
-    })
+    }
+    
+    db.user_twitter_data.insert_one(analysis_dict)
+    return jsonify()
