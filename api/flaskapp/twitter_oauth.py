@@ -10,6 +10,9 @@ from flask import Blueprint, request, redirect, jsonify, session, url_for
 
 from flaskapp import db
 
+from dotenv import load_dotenv
+load_dotenv()
+
 twitter_bp = Blueprint('twitter', __name__)
 
 CLIENT_ID = os.environ['CLIENT_ID']
