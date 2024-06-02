@@ -1,12 +1,12 @@
 import Twitter from "../assets/Twitter.png";
 
-function EmotionPreview() {
+function EmotionPreview({joyIntensity, angerIntensity, sadnessIntensity}) {
 
     // Joy color: #00FF00
     // Anger color: #FF4500
     // Sadness color: #4682B4
 
-    const joy = [78, '#00FF00', 'Joyful'], anger = [43, '#FF4500', 'Angry'], sadness = [14, '#4682B4', 'Sad']
+    const joy = [joyIntensity, '#00FF00', 'Joyful'], anger = [angerIntensity, '#FF4500', 'Angry'], sadness = [sadnessIntensity, '#4682B4', 'Sad']
 
     const emotions = [joy, anger, sadness];
     const sortedEmotions = emotions.sort((a, b) => b[0] - a[0]);
@@ -14,11 +14,11 @@ function EmotionPreview() {
     const [primary, secondary] = highestValues;
 
     const gradient = {
-        background: `linear-gradient(70deg, ${primary[1]} 0%, ${secondary[1]} 140%)`
+        background: `linear-gradient(70deg, ${primary[1]} 0%, ${primary[1]} ${primary[0]}%, ${secondary[1]} ${primary[0]}%, ${secondary[1]} 140%)`
     };
 
     const bgGradient = {
-        background: `linear-gradient(70deg, ${primary[1] + '33'} 0%, ${secondary[1] + '33'} 140%)`
+        background: `linear-gradient(70deg, ${primary[1] + '33'} 0%, ${primary[1] + '33'} ${primary[0]}%, ${secondary[1] + '33'} ${primary[0]}%, ${secondary[1] + '33'} 140%)`
     }
 
     return (
@@ -30,7 +30,7 @@ function EmotionPreview() {
                 </div>
             </div>
             <div id="circle" className="w-[45%] pb-[45%] rounded-full" style={gradient} />
-            <p className="text-center text-[34px] w-[85%]">Your timeline is mostly happy, with a bit of anger.</p>
+            <p className="text-center text-[34px] w-[85%]">Your timeline is mostly {primary[2].toLowerCase()}, with a bit of {secondary[2].toLowerCase()}.</p>
         </div>
     );
 }

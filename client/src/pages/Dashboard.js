@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
-import { Chart1, Chart2, BarGraph, CurveGraph, PieGraph } from "../components/Charts"
+
+import EmotionPreview from "../components/EmotionPreview";
+import Feed from "../components/Feed";
+// import { Chart1, Chart2, BarGraph, CurveGraph, PieGraph } from "../components/Charts";
 
 function Dashboard() {
     const { userId } = useParams();
-    const [results, setResults] = useState(null);
-    const [user, setUser] = useState(null);
     const [userTweets, setUserTweets] = useState(null);
     const [timeline, setTimeline] = useState(null);
+    const [timelineResults, setTimelineResults] = useState(null);
+    const [userResults, setUserResults] = useState(null);
     const location = useLocation();
 
     useEffect(() => {
@@ -18,9 +21,10 @@ function Dashboard() {
         fetch(`/api/analye/?user_id=${userId}`)
           .then(response => response.json())
           .then(data => {
-            setResults(data.analysis_results);
-            setUserTweets(data.analysis_results["user_tweet_data"]);
-            setTimeline(data.analysis_results["timeline_tweet_data"]);
+            setUserTweets(data.user_tweet_data);
+            setUserResults(data.user_sentiment_data);
+            setTimeline(data.user_timeline);
+            setTimelineResults(data.timeline_sentiment_data);
           })
           .catch(error => {
             console.error('Error:', error);
@@ -28,13 +32,18 @@ function Dashboard() {
       }, [userId]);
 
     return (
-        <div className="w-full h-full pt-[60px] flex justify-evenly items-center flex-wrap">
-            <div className="w-[300px] h-[300px]"><CurveGraph/></div>
-            <div className="w-[300px] h-[300px]"><Chart1/></div>
-            <div className="w-[300px] h-[300px]"><BarGraph/></div>
-            <div className="w-[300px] h-[300px]"><Chart2/></div>
-            <div className="w-[300px] h-[300px]"><PieGraph/></div>
+      <div id="HomePage" className="w-full h-full flex flex-col md:flex-row justify-between items-center">
+        <div className="pl-[60px] w-[45%] h-full">
+          <Feed type="user" />
         </div>
+        <div className="w-[35%] h-full fixed right-0 top-0">
+          <EmotionPreview 
+            joyIntensity={timelineResults.intensity_results.joy} 
+            angerIntensity={timelineResults.intensity_results.anger} 
+            sadnessIntensity={timelineResults.intensity_results.sadness} 
+            />
+        </div>
+      </div>
     );
 }
 

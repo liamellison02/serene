@@ -92,13 +92,13 @@ def process_user():
         "GET", 
         API_USERS_ENDPOINT + user_id + USER_TWEETS_URL,
         headers={"Authorization": f'Bearer {token["access_token"]}'}, 
-        params={'max_results': 10}
+        params={'max_results': 10, 'expansions': 'author_id', 'user.fields': ['username', 'created_at']}
     ).json()
     user_timeline = requests.request(
         "GET", 
         API_USERS_ENDPOINT + user_id + USER_TIMELINE_URL,
         headers={"Authorization": f'Bearer {token["access_token"]}'},
-        params={'max_results': 10}
+        params={'max_results': 20, 'expansions': 'author_id', 'user.fields': ['username', 'created_at']}
     ).json()
 
     db.users.insert_one(
