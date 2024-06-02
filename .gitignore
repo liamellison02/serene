@@ -1,7 +1,13 @@
+# git repo config directory
+**.git/
+.git/
+
+# pycache directory targets
 __pycache__/
+
 .idea/
 
-# virtual environment directory targets
+# python virtual environment directory targets
 venv/
 .venv/
 env/
