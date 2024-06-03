@@ -8,3 +8,4 @@ requests
 requests_oauthlib
 keras
 pymongo
+python-dotenv
