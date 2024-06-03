@@ -92,7 +92,7 @@ class TweetSentimentAnalyzer:
             validation_data=(self.val_sequences, self.val_labels),
             epochs=20,
             callbacks=[
-                tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=2)
+                tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=8)
             ]
         )
 

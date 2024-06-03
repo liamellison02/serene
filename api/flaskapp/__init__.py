@@ -1,12 +1,10 @@
 import os
 from flask import Flask, send_from_directory
+from dotenv import load_dotenv
+load_dotenv('./.env', override=True, verbose=True)
 from .api import api_bp
 from .twitter_oauth import twitter_bp
-from pymongo import MongoClient
 from .process import TweetSentimentAnalyzer
-
-client = MongoClient(os.environ["DB_URI"])
-db = client.worker
 
 def create_app():
     app = Flask(__name__, static_folder='client/build')

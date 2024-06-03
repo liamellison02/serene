@@ -14,7 +14,7 @@ function Feed({tweets}) {
     }, {});
     return (
         <div id="feed" className="w-full h-full">
-            {tweets.map((tweet, index) => {
+            {tweets.data.map((tweet, index) => {
                 const user = users[tweet.author_id];
                 return (
                     <div key={index}>

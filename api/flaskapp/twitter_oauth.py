@@ -2,16 +2,17 @@ import os
 import re
 import base64
 import hashlib
+import time
 from bson.json_util import dumps
+from dotenv import load_dotenv
+load_dotenv('./.env', override=True, verbose=True)
 
 import requests
 from requests_oauthlib import OAuth2Session
-from flask import Blueprint, request, redirect, jsonify, session, url_for
+from flask import Blueprint, request, redirect, jsonify, session, url_for, app
 
-from flaskapp import db
-
-from dotenv import load_dotenv
-load_dotenv()
+from .db import get_worker
+db = get_worker(os.environ['DB_URI'])
 
 twitter_bp = Blueprint('twitter', __name__)
 
@@ -24,10 +25,8 @@ USER_TIMELINE_URL = os.environ['USER_TIMELINE_URL']
 USER_TWEETS_URL = os.environ['USER_TWEETS_URL']
 API_USERS_ENDPOINT = os.environ['API_USERS_ENDPOINT']
 
-
-
 scopes = ['tweet.read', 'users.read', 'follows.read', 'follows.write']
-                       
+                
 
 @twitter_bp.route('/authorize/twitter')
 def twitter_info():
@@ -60,12 +59,12 @@ def twitter_info():
     return redirect(auth_url)
 
 
-@twitter_bp.route('/callback', methods=["GET"])
+@twitter_bp.route('/callback')
 def process_user():
     code = request.args.get('code')
     state = request.args.get('state')
-    
-    session_data = db.session.find_one({"code_challenge": code, "state": state})
+    time.sleep(2)
+    session_data = db.session.find_one({"state": state})
     
     # for offline access, you would also need to call for a bearer token as well as an access token here
     token = twitter.fetch_token(
@@ -92,13 +91,13 @@ def process_user():
         "GET", 
         API_USERS_ENDPOINT + user_id + USER_TWEETS_URL,
         headers={"Authorization": f'Bearer {token["access_token"]}'}, 
-        params={'max_results': 10, 'expansions': 'author_id', 'user.fields': ['username', 'created_at']}
+        params={'max_results': 10, 'expansions': 'author_id', 'tweet.fields': 'created_at'}
     ).json()
     user_timeline = requests.request(
         "GET", 
         API_USERS_ENDPOINT + user_id + USER_TIMELINE_URL,
         headers={"Authorization": f'Bearer {token["access_token"]}'},
-        params={'max_results': 20, 'expansions': 'author_id', 'user.fields': ['username', 'created_at']}
+        params={'max_results': 20, 'expansions': 'author_id', 'tweet.fields': 'created_at'}
     ).json()
 
     db.users.insert_one(
@@ -109,8 +108,7 @@ def process_user():
             "user_tweets": user_tweets
         }
     )
-    return redirect(url_for('dashboard', user_id))
-    # return jsonify(user_id, username, user_tweets, user_timeline)
+    return redirect(f'/dashboard?user_id={user_id}')
 
 # @twitter_bp.route('/logout')
 # def logout():
