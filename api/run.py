@@ -1,9 +1,9 @@
 import os
-from dotenv import load_dotenv
-load_dotenv('./flaskapp/.env', override=True, verbose=True)
 from flaskapp import create_app
+from flask_cors import CORS
 
 app = create_app()
+CORS(app)
 app.secret_key = os.urandom(50)
 
 if __name__ == '__main__':

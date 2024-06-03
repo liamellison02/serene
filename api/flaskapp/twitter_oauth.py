@@ -2,15 +2,11 @@ import os
 import re
 import base64
 import hashlib
-import time
 from bson.json_util import dumps
-from dotenv import load_dotenv
-load_dotenv('./.env', override=True, verbose=True)
-
 import requests
 from requests_oauthlib import OAuth2Session
-from flask import Blueprint, request, redirect, jsonify, session, url_for, app
-
+from flask import Blueprint, request, redirect, jsonify, session
+from .security import add_usage, server_reached_limit, user_reached_limit
 from .db import get_worker
 db = get_worker(os.environ['DB_URI'])
 
@@ -63,7 +59,6 @@ def twitter_info():
 def process_user():
     code = request.args.get('code')
     state = request.args.get('state')
-    time.sleep(2)
     session_data = db.session.find_one({"state": state})
     
     # for offline access, you would also need to call for a bearer token as well as an access token here
@@ -83,9 +78,31 @@ def process_user():
     user_id = user_info["data"]["id"]
     username = user_info["data"]["username"]
     
-    current_authorized_usernames = ['kylekorversalt', 'ArmanD39467899', 'liamellison02']
-    if username.lower() not in current_authorized_usernames:
-        return jsonify(user_info)
+    if db.users.find_one({"user_id": user_id}) is None:
+        db.users.insert_one(
+            {
+                "user_id": user_id,
+                "username": username,
+                "token": token,
+                "num_tweets_read": 0,
+                "tweet_limit": 250
+            }
+        )
+    else:
+        db.users.update_one(
+            {"user_id": user_id},
+            {"$set": {"token": token}}
+        )
+    
+    # This should be uncommented when app needs to be recalled
+    # current_authorized_usernames = ['kylekorversalt', 'ArmanD39467899', 'liamellison02']
+    # if username.lower() not in current_authorized_usernames:
+    #     return jsonify(user_info)
+    
+    if server_reached_limit():
+        return jsonify({"message": "Server has reached its limit of Twitter API reads"})
+    if user_reached_limit(user_id):
+        return jsonify({"message": "User has reached their limit of Twitter API reads"})
     
     user_tweets = requests.request(
         "GET", 
@@ -99,8 +116,9 @@ def process_user():
         headers={"Authorization": f'Bearer {token["access_token"]}'},
         params={'max_results': 20, 'expansions': 'author_id', 'tweet.fields': 'created_at'}
     ).json()
-
-    db.users.insert_one(
+    
+    add_usage(user_tweets["meta"]["result_count"] + user_timeline["meta"]["result_count"], user_id)
+    db.user_tweet_data.insert_one(
         {
             "username": username,
             "user_id": user_id,
