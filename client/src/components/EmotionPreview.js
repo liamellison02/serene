@@ -2,12 +2,14 @@ import Twitter from "../assets/Twitter.png";
 import { mix } from 'polished'
 
 function EmotionPreview({data}) {
+    
+    let anger, love, sadness;
 
-    if (!data) {
-        return
+    if (data) {
+        ({ anger, love, sadness } = data["timeline_sentiment_data"]);
+    } else {
+        anger = 0; love = 0; sadness = 0;
     }
-
-    let { anger, love, sadness } = data["timeline_sentiment_data"]
 
     // Joy color: #fe43ef
     // Anger color: #FF4500
@@ -32,16 +34,25 @@ function EmotionPreview({data}) {
         color: mix(0.6, 'black', primary[1]),
     }
 
+    const twitterBg = {
+        background: mix(0.8, 'black', primary[1]),
+    }
+
     return (
         <div id="Emotions" className="h-full w-full flex flex-col justify-evenly items-center px-5" style={{...bgGradient, ...textColor}}>
             <div className="w-full flex items-center justify-center ">
                 <h1 className="text-[64px] font-playfair font-semibold leading-[1rem]">SERENE</h1>
-                <a href="/authorize/twitter" className="w-[64px] h-[64px] rounded-full bg-black ml-6 flex items-center justify-center">
+                <a href="/authorize/twitter" className="w-[64px] h-[64px] rounded-full ml-6 flex items-center justify-center" style={twitterBg}>
                     <img src={Twitter} alt="twitter" className="w-[52px] h-[52px]"/>
                 </a>
             </div>
             <div id="circle" className="w-[45%] pb-[45%] rounded-full" style={gradient} />
-            <p className="text-center text-[34px] w-[85%]">Your timeline is mostly {primary[2]}, with a bit of {secondary[2]}.</p>
+            {/* CHANGE THIS LATER, IT WORKS BECAUSE HOME PASSES NULL */}
+            {data ? (
+                <p className="text-center text-[34px] w-[85%] font-lora">Your timeline is mostly {primary[2]}, with a bit of {secondary[2]}.</p>
+            ) : (
+                <p className="text-center text-[34px] w-[85%] font-lora">I can't see any tweets :o</p>
+            )}
         </div>
     );
 }
