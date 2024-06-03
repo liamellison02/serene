@@ -8,6 +8,7 @@ module.exports = {
       fontFamily: {
         'playfair': ["Playfair Display", 'serif'],
         'lora': ["Lora", 'serif'],
+        'mulish': ["Mulish", 'sans-serif']
       }
     },
   },
