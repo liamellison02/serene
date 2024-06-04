@@ -11,7 +11,7 @@ function EmotionPreview({data}) {
         anger = 0; love = 0; sadness = 0;
     }
 
-    // Joy color: #fe43ef
+    // Love color: #fe43ef
     // Anger color: #FF4500
     // Sadness color: #4682B4
 
