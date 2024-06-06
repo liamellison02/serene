@@ -14,7 +14,7 @@ function Dashboard() {
 			let user_id = params.get("user_id");
 			setFullAnalysis(await GetTweetData(user_id));
 		})();
-	}, []);
+	}, [location.search]);
 
 
 	return (

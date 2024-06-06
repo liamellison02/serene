@@ -6,7 +6,7 @@ function EmotionPreview({data}) {
     let anger, love, sadness;
 
     if (data) {
-        ({ anger, love, sadness } = data["timeline_sentiment_data"]);
+        ({ anger, love, sadness } = data["timeline_sentiment_data"]["intensity_totals"]);
     } else {
         anger = 0; love = 0; sadness = 0;
     }
