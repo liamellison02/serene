@@ -1,7 +1,5 @@
 import os
 from flask import Flask, send_from_directory
-from dotenv import load_dotenv
-load_dotenv('./.env', override=True, verbose=True)
 from .api import api_bp
 from .twitter_oauth import twitter_bp
 from .process import TweetSentimentAnalyzer

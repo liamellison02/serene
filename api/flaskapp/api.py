@@ -1,7 +1,5 @@
 import os
 from flask import Blueprint, request, jsonify, current_app
-from dotenv import load_dotenv
-load_dotenv('./.env', override=True, verbose=True)
 
 from .db import get_worker
 db = get_worker(os.environ['DB_URI'])
