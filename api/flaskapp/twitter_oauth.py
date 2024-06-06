@@ -118,14 +118,19 @@ def process_user():
     ).json()
     
     add_usage(user_tweets["meta"]["result_count"] + user_timeline["meta"]["result_count"], user_id)
-    db.user_tweet_data.insert_one(
-        {
-            "username": username,
-            "user_id": user_id,
-            "user_timeline": user_timeline,
-            "user_tweets": user_tweets
-        }
-    )
+    
+    if db.user_tweet_data.find_one({"user_id": user_id}) is not None:
+        db.user_tweet_data.update_one({"user_id": user_id}, {"$set": {"user_tweets": user_tweets, "user_timeline": user_timeline}})
+    else:
+        db.user_tweet_data.insert_one(
+            {
+                "username": username,
+                "user_id": user_id,
+                "user_timeline": user_timeline,
+                "user_tweets": user_tweets
+            }
+        )
+
     return redirect(f'/dashboard?user_id={user_id}')
 
 # @twitter_bp.route('/logout')
