@@ -1,4 +1,4 @@
-import { format, formatDistanceToNow, isThisYear, isThisWeek } from 'date-fns';
+import { format, isThisYear, isThisWeek } from 'date-fns';
 
 function idToNameAndUsername(data, id) {
     let users = data["user_timeline"]["includes"]["users"]
