@@ -1,11 +1,11 @@
 import Home from "./Home";
 import Dashboard from "./Dashboard";
 import AuthorizeTwitter from "./AuthorizeTwitter";
-import Callback from "./Callback";
+import PageNotFound from "./NotFound"
 
 export {
     Home,
     Dashboard,
     AuthorizeTwitter,
-    Callback,
+    PageNotFound,
 }
