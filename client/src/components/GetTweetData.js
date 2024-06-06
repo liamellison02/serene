@@ -7,7 +7,7 @@ async function GetTweetData(user_id) {
 
     let full_analysis = undefined
 
-    await fetch(`http://127.0.0.1:5000/api/analyze?user_id=${user_id}`)
+    await fetch(`/api/analyze?user_id=${user_id}`)
         .then(response => response.json())
         .then(data => {
             console.log(Object.keys(data));
