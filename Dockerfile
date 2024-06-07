@@ -7,6 +7,15 @@ WORKDIR /app
 # Copy the requirements file into the container's /app directory
 COPY requirements.txt ./
 
+# Install the required dependencies, including pkg-config and libhdf5-dev
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libhdf5-dev \
+    nodejs \
+    npm && \
+    rm -rf /var/lib/apt/lists/*
+
+
 # Install the required dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
