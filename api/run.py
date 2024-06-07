@@ -1,6 +1,3 @@
-import dotenv
-dotenv.load_dotenv(override=True)
-
 import os
 from flaskapp import create_app
 from flaskapp.process import TweetSentimentAnalyzer
