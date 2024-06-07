@@ -46,6 +46,7 @@ RUN cp -r build/* /app/flaskapp/client/build
 # Change the working directory back to /app
 WORKDIR /app
 
+# Set env variables for paths to model datasets
 ENV TRAIN_PATH /app/flaskapp/dataset/train.txt
 ENV VAL_PATH /app/flaskapp/dataset/val.txt
 ENV TEST_PATH /app/flaskapp/dataset/test.txt
