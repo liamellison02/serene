@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-import random
+import random, os
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -8,7 +8,8 @@ import pandas as pd
 
 
 class TweetSentimentAnalyzer:
-    def __init__(self, train_path, val_path, test_path):
+    def __init__(self, train_path, val_path, test_path, model_path='sentiment_model.h5'):
+        self.model_path = model_path
         self.maxlen = 50
         self.tokenizer = Tokenizer(num_words=10000, oov_token="<UNK>")
         self.analyzer = SentimentIntensityAnalyzer()
@@ -35,8 +36,11 @@ class TweetSentimentAnalyzer:
         self.train_labels = self.train_labels.map(self.class_to_index)
         self.val_labels = self.val_labels.map(self.class_to_index)
 
-        self.model = self.create_model()
-        self.train_model()
+        self.model = self.load_model()
+        if self.model is None:
+            self.model = self.create_model()
+            self.train_model()
+            self.save_model()
         self.evaluate_model()
         self.predict()
 
@@ -74,6 +78,14 @@ class TweetSentimentAnalyzer:
         )
         return model
 
+    def save_model(self):
+        self.model.save(self.model_path)
+
+    def load_model(self):
+        if os.path.exists(self.model_path):
+            return tf.keras.models.load_model(self.model_path)
+        return None
+
     def predict_emotion(self, sequence):
         p = self.model.predict(np.expand_dims(sequence, axis=0))[0]
         pred_class = self.index_to_class[np.argmax(p).astype('uint8')]
@@ -103,18 +115,19 @@ class TweetSentimentAnalyzer:
         predict_x = self.model.predict(self.test_sequences)
         classes_x = np.argmax(predict_x, axis=1)
 
-        """for _ in range(5):
-            i = random.randint(0, len(self.test_tweets) - 1)
-            print("Tweet : ", self.test_tweets[i])
-            intensity_score = abs(self.get_sentiment_score(self.test_tweets[i]))
-            pred_class = self.predict_emotion(self.test_sequences[i])
-            pred_intensity = self.predict_emotion_probability(self.test_sequences[i])
-            print("predicted label : ", pred_class)
-            print("intensity or probability of emotion: {:.2f}".format(pred_intensity))
-            print("sentiment score from VADER: ", intensity_score)
-            print("-----------------------\n")"""
+        # Uncomment this if you want to see sample predictions
+        # for _ in range(5):
+        #     i = random.randint(0, len(self.test_tweets) - 1)
+        #     print("Tweet : ", self.test_tweets[i])
+        #     intensity_score = abs(self.get_sentiment_score(self.test_tweets[i]))
+        #     pred_class = self.predict_emotion(self.test_sequences[i])
+        #     pred_intensity = self.predict_emotion_probability(self.test_sequences[i])
+        #     print("predicted label : ", pred_class)
+        #     print("intensity or probability of emotion: {:.2f}".format(pred_intensity))
+        #     print("sentiment score from VADER: ", intensity_score)
+        #     print("-----------------------\n")
 
-    def main(self,tweetdict,timelinedict):
+    def main(self, tweetdict, timelinedict):
         pertweet_sentiment_dict = self.calculate_sentiment_per_tweet(tweetdict)
         total_intensity_user = self.calculate_total_intensity(list(tweetdict["text"]))
         total_intensity_timeline = self.calculate_total_intensity(list(timelinedict["text"]))
@@ -122,7 +135,6 @@ class TweetSentimentAnalyzer:
             "total_anger_intensity_level": total_intensity_user["anger"],
             "total_joy_intensity_level": total_intensity_user["joy"],
             "total_sadness_intensity_level": total_intensity_user["sadness"],
-
             "timeline_anger_intensity_level": total_intensity_timeline["anger"],
             "timeline_joy_intensity_level": total_intensity_timeline["joy"],
             "timeline_sadness_intensity_level": total_intensity_timeline["sadness"]

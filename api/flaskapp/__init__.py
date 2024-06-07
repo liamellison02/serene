@@ -9,6 +9,12 @@ def create_app():
     
     app.register_blueprint(api_bp, url_prefix='/api')
     app.register_blueprint(twitter_bp)
+
+    # Initialize and train the sentiment model
+    train_path = os.environ.get('TRAIN_PATH')
+    val_path = os.environ.get('VAL_PATH')
+    test_path = os.environ.get('TEST_PATH')
+    app.config['sentiment_model'] = TweetSentimentAnalyzer(train_path, val_path, test_path)
     
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
