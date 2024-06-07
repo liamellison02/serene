@@ -2,40 +2,74 @@ import Twitter from "../assets/Twitter.png";
 import { mix } from 'polished'
 
 function EmotionPreview({data}) {
-    
-    let anger, love, sadness;
-
-    if (data) {
-        ({ anger, love, sadness } = data["timeline_sentiment_data"]["intensity_totals"]);
-    } else {
-        anger = 0; love = 0; sadness = 0;
-    }
 
     // Love color: #fe43ef
     // Anger color: #FF4500
     // Sadness color: #4682B4
 
-    let love_arr = [love, '#fe43ef', 'loving'], anger_arr = [anger, '#FF4500', 'anger'], sadness_arr = [sadness, '#4682B4', 'Sad']
+    const love_info = {
+        "adjective": "happy",
+        "noun":"happiness",
+        "hex": "#FE43EF",
+        "value": undefined,
+    }
 
-    const emotions = [love_arr, anger_arr, sadness_arr];
-    const sortedEmotions = emotions.sort((a, b) => b[0] - a[0]);
-    const highestValues = sortedEmotions.slice(0, 2);
-    const [primary, secondary] = highestValues;
+    const anger_info = {
+        "adjective": "angry",
+        "noun": "anger",
+        "hex": "#FF4500",
+        "value": undefined,
+    }
+
+    const sadness_info = {
+        "adjective": "sad",
+        "noun": "sadness",
+        "hex": "#4682B4",
+        "value": undefined
+    }
+
+    let primary = {
+        "adjective": undefined,
+        "noun": undefined,
+        "hex": "#D7D7D7",
+        "value": undefined,
+    }
+    let secondary = {
+        "adjective": undefined,
+        "noun": undefined,
+        "hex": "#5E5E5E",
+        "value": undefined,
+    }
+        
+    if (data) {
+        let love = 0, anger = 0, sadness = 0;
+        ({ love, anger, sadness } = data["timeline_sentiment_data"]["intensity_totals"]);
+        if (!love) { love = 0 }
+        if (!anger) { anger = 0 }
+        if (!sadness) {sadness = 0}
+        love_info.value = love
+        anger_info.value = anger
+        sadness_info.value = sadness
+
+        const emotions = [love_info, anger_info, sadness_info];
+        const sortedEmotions = emotions.sort((a, b) => b.value - a.value);
+        [primary, secondary] = sortedEmotions.slice(0, 2);
+    }
 
     const gradient = {
-        background: `linear-gradient(70deg, ${primary[1]} 0%, ${secondary[1]} 140%)`
+        background: `linear-gradient(70deg, ${primary.hex} 0%, ${secondary.hex} 140%)`
     };
 
     const bgGradient = {
-        background: `linear-gradient(70deg, ${primary[1] + '33'} 0%, ${secondary[1] + '33'} 140%)`
+        background: `linear-gradient(70deg, ${primary.hex + '33'} 0%, ${secondary.hex + '33'} 140%)`
     }
 
     const textColor = {
-        color: mix(0.6, 'black', primary[1]),
+        color: mix(0.6, 'black', primary.hex),
     }
 
     const twitterBg = {
-        background: mix(0.8, 'black', primary[1]),
+        background: mix(0.8, 'black', primary.hex),
     }
 
     return (
@@ -49,9 +83,9 @@ function EmotionPreview({data}) {
             <div id="circle" className="w-[45%] pb-[45%] rounded-full" style={gradient} />
             {/* CHANGE THIS LATER, IT WORKS BECAUSE HOME PASSES NULL */}
             {data ? (
-                <p className="text-center text-[34px] w-[85%] font-lora">Your timeline is mostly {primary[2]}, with a bit of {secondary[2]}.</p>
+                <p className="text-center text-[34px] w-[85%] font-lora">Your timeline is mostly {primary.adjective}, with a bit of {secondary.noun}.</p>
             ) : (
-                <p className="text-center text-[34px] w-[85%] font-lora">I can't see any tweets :o</p>
+                <p className="text-center text-[34px] w-[85%] font-lora">Loading tweets...</p>
             )}
         </div>
     );
