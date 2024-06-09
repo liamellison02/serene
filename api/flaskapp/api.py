@@ -1,10 +1,10 @@
 import os
-from flask import Blueprint, request, jsonify, current_app
-
+from flask import Blueprint, request, jsonify, current_app, abort
 from .db import get_worker
-db = get_worker(os.environ['DB_URI'])
 
+db = get_worker(os.environ['DB_URI'])
 api_bp = Blueprint('api', __name__)
+
 
 def calculate_total_intensity(tweets):
     total_intensity = {}
@@ -16,6 +16,17 @@ def calculate_total_intensity(tweets):
 
 @api_bp.route('/analyze', methods=['GET'])
 def analyze():
+    secret_token = os.environ.get('Model_key')
+    request_token = request.headers.get('Authorization')
+
+    if not request_token or request_token != f'Bearer {secret_token}':
+        abort(403)
+
+    user_id = request.args.get('user_id')
+    data = db.user_tweet_data.find_one({"user_id": user_id})
+    if not data:
+        abort(404)
+
     user_id = request.args.get('user_id')
     data = db.user_tweet_data.find_one({"user_id": user_id})
     user_tweets = data['user_tweets']
