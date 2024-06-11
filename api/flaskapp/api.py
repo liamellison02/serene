@@ -16,6 +16,8 @@ def calculate_total_intensity(tweets):
 
 @api_bp.route('/analyze', methods=['GET'])
 def analyze():
+    user_id = request.args.get('user_id')
+    data = db.user_tweet_data.find_one({"user_id": user_id})
     user_tweets = data['user_tweets']
     user_timeline = data['user_timeline']
     model = current_app.config['sentiment_model']
