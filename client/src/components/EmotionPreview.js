@@ -1,7 +1,11 @@
 import Twitter from "../assets/Twitter.png";
 import { mix } from 'polished'
+import { useSelector } from 'react-redux'
 
-function EmotionPreview({data}) {
+function EmotionPreview() {
+
+    const tweetData = useSelector(state => state.tweetData)
+    const data = tweetData.data
 
     // Love color: #fe43ef
     // Anger color: #FF4500
@@ -80,12 +84,12 @@ function EmotionPreview({data}) {
                     <img src={Twitter} alt="twitter" className="w-[52px] h-[52px]"/>
                 </a>
             </div>
-            <div id="circle" className="w-[45%] pb-[45%] rounded-full" style={gradient} />
+            <div id="circle" className="w-[45%] pb-[45%] rounded-full font-sans" style={gradient} />
             {/* CHANGE THIS LATER, IT WORKS BECAUSE HOME PASSES NULL */}
             {data ? (
-                <p className="text-center text-[34px] w-[85%] font-lora">Your timeline is mostly {primary.adjective}, with a bit of {secondary.noun}.</p>
+                <p className="text-center text-[34px] w-[85%]">Your timeline is mostly {primary.adjective}, with a bit of {secondary.noun}.</p>
             ) : (
-                <p className="text-center text-[34px] w-[85%] font-lora">Loading tweets...</p>
+                <p className="text-center text-[34px] w-[85%]">Loading tweets...</p>
             )}
         </div>
     );

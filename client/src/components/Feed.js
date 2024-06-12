@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux'
 import { format, isThisYear, isThisWeek } from 'date-fns';
 
 function idToNameAndUsername(data, id) {
@@ -31,10 +32,14 @@ function Tweet({name, username, text, date}) {
     );
 }
 
-function Feed({data}) {
-    if (!data) {
+function Feed() {
+    const tweetData = useSelector(state => state.tweetData)
+
+    if (!tweetData.hasData) {
         return
     }
+
+    const data = tweetData.data
 
     let tweets = data["user_timeline"]["data"]
 
