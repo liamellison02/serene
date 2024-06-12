@@ -59,6 +59,9 @@ function EmotionPreview() {
         const sortedEmotions = emotions.sort((a, b) => b.value - a.value);
         [primary, secondary] = sortedEmotions.slice(0, 2);
     }
+    else {
+        console.log("data not found in store")
+    }
 
     const gradient = {
         background: `linear-gradient(70deg, ${primary.hex} 0%, ${secondary.hex} 140%)`
