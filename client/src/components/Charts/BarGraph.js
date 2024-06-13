@@ -23,10 +23,19 @@ ChartJS.register(
 
 function BarGraph() {
   const tweetData = useSelector(state => state.tweetData)
-    const data = tweetData.data
-
-  let love = 0, anger = 0, sadness = 0;
-  ({ love, anger, sadness } = data["timeline_sentiment_data"]["intensity_totals"]);
+  const data = tweetData.data
+  const emotionTotals = data.timeline_sentiment_data.intensity_totals
+  const labels = []
+  const totals = []
+  const colors = []
+  const emotionPairs = Object.entries(emotionTotals);
+  emotionPairs.forEach(([key, value]) => {
+    // Do something with each key-value pair
+    labels.push(key)
+    totals.push(value)
+    const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+    colors.push(randomColor);
+  });
 
   // Handle missing data
   if (!data) {
@@ -36,34 +45,23 @@ function BarGraph() {
   const options = {
     plugins: {
       legend: {
-        display: false, // Hide the legend
+        display: false,
       },
     },
   };
   
   const chartData = {
-    labels: ["Love", "Anger", "Sadness"],
+    labels: labels,
     datasets: [
       {
-        data: [
-          love,
-          anger,
-          sadness,
-        ],
-        backgroundColor: [
-          "rgba(255, 0, 0, 0.2)", // Red for Anger
-          "rgba(0, 128, 0, 0.2)", // Green for Joy
-          "rgba(128, 0, 128, 0.2)", // Purple for Sadness
-        ],
-        borderColor: [
-          "rgba(255, 0, 0, 1)", // Red for Anger
-          "rgba(0, 128, 0, 1)", // Green for Joy
-          "rgba(128, 0, 128, 1)", // Purple for Sadness
-        ],
+        data: totals,
+        backgroundColor: colors,
+        borderColor: colors,
         borderWidth: 1,
       },
     ],
   };
+
   return (
     <div className="w-full h-full bg-slate-200 rounded-lg flex justify-center items-center p-4">
         <Bar data={chartData} options={options}/>
