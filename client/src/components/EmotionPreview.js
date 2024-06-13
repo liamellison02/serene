@@ -1,7 +1,10 @@
-import Twitter from "../assets/Twitter.png";
 import { mix } from 'polished'
+import { useSelector } from 'react-redux'
 
-function EmotionPreview({data}) {
+function EmotionPreview() {
+
+    const tweetData = useSelector(state => state.tweetData)
+    const data = tweetData.data
 
     // Love color: #fe43ef
     // Anger color: #FF4500
@@ -68,24 +71,16 @@ function EmotionPreview({data}) {
         color: mix(0.6, 'black', primary.hex),
     }
 
-    const twitterBg = {
-        background: mix(0.8, 'black', primary.hex),
-    }
-
     return (
         <div id="Emotions" className="h-full w-full flex flex-col justify-evenly items-center px-5" style={{...bgGradient, ...textColor}}>
             <div className="w-full flex items-center justify-center ">
-                <h1 className="text-[64px] font-playfair font-semibold leading-[1rem]">SERENE</h1>
-                <a href="/authorize/twitter" className="w-[64px] h-[64px] rounded-full ml-6 flex items-center justify-center" style={twitterBg}>
-                    <img src={Twitter} alt="twitter" className="w-[52px] h-[52px]"/>
-                </a>
+                <h1 className="text-[64px] font-semibold leading-[1rem]">SERENE</h1>
             </div>
-            <div id="circle" className="w-[45%] pb-[45%] rounded-full" style={gradient} />
-            {/* CHANGE THIS LATER, IT WORKS BECAUSE HOME PASSES NULL */}
+            <div id="circle" className="w-[45%] pb-[45%] rounded-full font-sans" style={gradient} />
             {data ? (
-                <p className="text-center text-[34px] w-[85%] font-lora">Your timeline is mostly {primary.adjective}, with a bit of {secondary.noun}.</p>
+                <p className="text-center text-[34px] w-[85%]">Your timeline is mostly {primary.adjective}, with a bit of {secondary.noun}.</p>
             ) : (
-                <p className="text-center text-[34px] w-[85%] font-lora">Loading tweets...</p>
+                <p className="text-center text-[34px] w-[85%]">Loading tweets...</p>
             )}
         </div>
     );
