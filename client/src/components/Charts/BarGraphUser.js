@@ -63,7 +63,7 @@ function BarGraph() {
   };
 
   return (
-    <div className="w-full h-full bg-slate-200 rounded-lg flex justify-center items-center p-4">
+    <div className="w-[45%] h-full bg-slate-200 rounded-lg flex justify-center items-center p-4">
         <Bar data={chartData} options={options}/>
     </div>
   );

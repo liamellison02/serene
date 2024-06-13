@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux'
-import BarGraph from './Charts/BarGraph'
+import BarGraphUser from './Charts/BarGraphUser'
+import BarGraphTimeline from './Charts/BarGraphTimeline'
 
 function Stats() {
 
@@ -16,21 +17,21 @@ function Stats() {
     return (
         <div className="w-full h-full flex flex-col items-center justify-center" >
             <div className="w-full flex justify-evenly">
-                <div className="bg-green-300 rounded-2xl m-2 p-6">
+                <div className="bg-slate-200 rounded-2xl m-2 p-6">
                     Overall timeline emotion: <span className="text-xl font-bold">{timeline_emotion}</span>
                 </div>
-                <div className="bg-green-300 rounded-2xl m-2 p-6">
+                <div className="bg-slate-200 rounded-2xl m-2 p-6">
                     Overall tweet emotion: <span className="text-xl font-bold">{user_tweet_emotion}</span>
                 </div>
             </div>
             <div className="w-full flex justify-evenly">
-                <div className="bg-red-300 rounded-xl m-4 p-10">
+                <div className="bg-slate-200 rounded-xl m-4 p-10">
                     <h3>Timeline analysis:</h3>
                     {Object.entries(timeline_analysis).map(([key, value]) => (
                         <p key={key}>{key}: {value.toFixed(1)}</p>
                     ))}
                 </div>
-                <div className="bg-red-300 rounded-xl m-4 p-10">
+                <div className="bg-slate-200 rounded-xl m-4 p-10">
                     <h3>User tweet analysis:</h3>
                     {Object.entries(user_tweet_analysis).map(([key, value]) => (
                         <p key={key}>{key}: {value.toFixed(1)}</p>
@@ -38,8 +39,8 @@ function Stats() {
                 </div>
             </div>
             <div className="w-full flex justify-evenly">
-                    <BarGraph />
-                    <BarGraph />
+                    <BarGraphUser />
+                    <BarGraphTimeline />
                 </div>
         </div>
     )
