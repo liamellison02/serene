@@ -131,7 +131,7 @@ def process_user():
             }
         )
 
-    return redirect(f'/dashboard?user_id={user_id}')
+    return redirect(f'https://sereneappdev.co/dashboard?user_id={user_id}')
 
 # @twitter_bp.route('/logout')
 # def logout():

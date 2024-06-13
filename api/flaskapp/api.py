@@ -1,10 +1,10 @@
 import os
-from flask import Blueprint, request, jsonify, current_app, abort
+from flask import Blueprint, request, jsonify, current_app
+
 from .db import get_worker
-
 db = get_worker(os.environ['DB_URI'])
-api_bp = Blueprint('api', __name__)
 
+api_bp = Blueprint('api', __name__)
 
 def calculate_total_intensity(tweets):
     total_intensity = {}
@@ -56,11 +56,14 @@ def analyze():
         "user_timeline": user_timeline,
         "timeline_sentiment_data": tl_sent_data
     }
-    db.user_twitter_data.insert_one(
+    analysis_document = db.user_twitter_data.insert_one(
         {   
             "user_id": user_id,
             "analysis": analysis_dict
         }
     )
-    
+    db.users.update_one(
+        {"user_id": user_id},
+        {"$set": {"analysis_id": analysis_document.inserted_id}}
+    )
     return jsonify(analysis_dict)
