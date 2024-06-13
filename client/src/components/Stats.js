@@ -6,6 +6,14 @@ function Stats() {
 
     const TweetData = useSelector(state => state.tweetData)
 
+    if (!TweetData.hasData) {
+        return(
+            <>
+                Tweet Data not found, please login
+            </>
+        )
+    }
+
     const timeline_analysis = TweetData.data.timeline_sentiment_data.intensity_totals
     const user_tweet_analysis = TweetData.data.user_sentiment_data.intensity_totals
     const timeline_emotion = TweetData.data.timeline_sentiment_data.overall_sentiment
