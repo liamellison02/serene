@@ -1,5 +1,5 @@
 import React from "react";
-import GetTweetData from "../GetTweetData";
+import { useSelector } from "react-redux";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -22,10 +22,14 @@ ChartJS.register(
 );
 
 function BarGraph() {
-  const timeline_data = GetTweetData()["timeline_analysis_data"];
+  const tweetData = useSelector(state => state.tweetData)
+    const data = tweetData.data
+
+  let love = 0, anger = 0, sadness = 0;
+  ({ love, anger, sadness } = data["timeline_sentiment_data"]["intensity_totals"]);
 
   // Handle missing data
-  if (!timeline_data) {
+  if (!data) {
     return <p>Loading data...</p>;
   }
 
@@ -38,13 +42,13 @@ function BarGraph() {
   };
   
   const chartData = {
-    labels: ["Anger", "Joy", "Sadness"],
+    labels: ["Love", "Anger", "Sadness"],
     datasets: [
       {
         data: [
-          timeline_data["timeline_weighted_anger"],
-          timeline_data["timeline_weighted_joy"],
-          timeline_data["timeline_weighted_sadness"],
+          love,
+          anger,
+          sadness,
         ],
         backgroundColor: [
           "rgba(255, 0, 0, 0.2)", // Red for Anger

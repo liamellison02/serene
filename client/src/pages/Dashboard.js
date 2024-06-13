@@ -15,9 +15,9 @@ function Dashboard() {
 				 <Feed />
 			</div>
 			<div className="w-[35%] h-full"/>
-			<div className="w-[35%] h-full fixed right-0 top-0 bg-[#FFFFFF]">
+			<a href="/analysis" className="w-[35%] h-full fixed right-0 top-0 bg-[#FFFFFF]">
 				<EmotionPreview />
-			</div>
+			</a>
 		</div>
 	);
 }

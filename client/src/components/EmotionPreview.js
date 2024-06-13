@@ -1,4 +1,3 @@
-import Twitter from "../assets/Twitter.png";
 import { mix } from 'polished'
 import { useSelector } from 'react-redux'
 
@@ -59,9 +58,6 @@ function EmotionPreview() {
         const sortedEmotions = emotions.sort((a, b) => b.value - a.value);
         [primary, secondary] = sortedEmotions.slice(0, 2);
     }
-    else {
-        console.log("data not found in store")
-    }
 
     const gradient = {
         background: `linear-gradient(70deg, ${primary.hex} 0%, ${secondary.hex} 140%)`
@@ -75,20 +71,12 @@ function EmotionPreview() {
         color: mix(0.6, 'black', primary.hex),
     }
 
-    const twitterBg = {
-        background: mix(0.8, 'black', primary.hex),
-    }
-
     return (
         <div id="Emotions" className="h-full w-full flex flex-col justify-evenly items-center px-5" style={{...bgGradient, ...textColor}}>
             <div className="w-full flex items-center justify-center ">
-                <h1 className="text-[64px] font-playfair font-semibold leading-[1rem]">SERENE</h1>
-                <a href="/authorize/twitter" className="w-[64px] h-[64px] rounded-full ml-6 flex items-center justify-center" style={twitterBg}>
-                    <img src={Twitter} alt="twitter" className="w-[52px] h-[52px]"/>
-                </a>
+                <h1 className="text-[64px] font-semibold leading-[1rem]">SERENE</h1>
             </div>
             <div id="circle" className="w-[45%] pb-[45%] rounded-full font-sans" style={gradient} />
-            {/* CHANGE THIS LATER, IT WORKS BECAUSE HOME PASSES NULL */}
             {data ? (
                 <p className="text-center text-[34px] w-[85%]">Your timeline is mostly {primary.adjective}, with a bit of {secondary.noun}.</p>
             ) : (

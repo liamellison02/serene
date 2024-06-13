@@ -1,17 +1,18 @@
 import EmotionPreview from "../components/EmotionPreview";
+import { Stats } from "../components"
 
 
 function Analysis() {
 
 	return (
 		<div id="HomePage" className="w-full h-full flex flex-col md:flex-row justify-between items-center">
-			<div className="w-[55%] h-full px-[60px] mx-auto">
-				 {/* <Analysis /> */}
+			<div className="w-[65%] h-full px-[60px] mx-auto">
+				 <Stats />
 			</div>
 			<div className="w-[35%] h-full"/>
-			<div className="w-[35%] h-full fixed right-0 top-0 bg-[#FFFFFF]">
+			<a href="/dashboard" className="w-[35%] h-full fixed right-0 top-0 bg-[#FFFFFF]">
 				<EmotionPreview />
-			</div>
+			</a>
 		</div>
 	);
 }
