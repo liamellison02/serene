@@ -117,7 +117,7 @@ def process_user():
         params={'max_results': 20, 'expansions': 'author_id', 'tweet.fields': 'created_at'}
     ).json()
     
-    add_usage(user_tweets["meta"]["result_count"] + user_timeline["meta"]["result_count"], user_id)
+    # add_usage(user_tweets["meta"]["result_count"] + user_timeline["meta"]["result_count"], user_id)
     
     if db.user_tweet_data.find_one({"user_id": user_id}) is not None:
         db.user_tweet_data.update_one({"user_id": user_id}, {"$set": {"user_tweets": user_tweets, "user_timeline": user_timeline}})
