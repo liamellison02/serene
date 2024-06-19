@@ -34,7 +34,9 @@ function EmotionPreview() {
 
     const na_info = {
         "adjective": "miscellaneous",
-        "noun": "miscellaneous tweets"
+        "noun": "miscellaneous tweets",
+        "hex": "#284029",
+        "value": undefined
     }
 
     let primary = {
@@ -51,7 +53,9 @@ function EmotionPreview() {
     }
     
     let Positive = 0, Neutral = 0, Negative = 0, NA = 0;
-    ({ Positive, Neutral, Negative, NA } = data["timeline_sentiment_data"]["intensity_totals"]);
+    if (data) {
+        ({ Positive, Neutral, Negative, NA } = data["timeline_sentiment_data"]["intensity_totals"]);
+    }
     if (Positive || Neutral || Negative || NA) {
         positive_info.value = Positive
         neutral_info.value = Neutral
