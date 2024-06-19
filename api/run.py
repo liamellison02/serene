@@ -1,8 +1,13 @@
+from dotenv import load_dotenv
+load_dotenv()
+from flask_cors import CORS
+
 import os
 from flaskapp import create_app
 
 app = create_app()
 app.secret_key = os.urandom(50)
+CORS(app)
 
 if __name__ == '__main__':
     port = os.environ.get("PORT")
@@ -13,4 +18,4 @@ if __name__ == '__main__':
         port = int(port)
         print(f"Using port {port} from PORT environment variable.")
 
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=True)

@@ -8,3 +8,7 @@ requests
 requests_oauthlib
 keras
 pymongo
+joblib
+scikit-learn
+jupyter
+ipykernel
