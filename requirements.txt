@@ -1,5 +1,5 @@
 flask
-pymongo
+flask_cors
 tensorflow==2.13.0
 numpy
 pandas
@@ -7,3 +7,8 @@ vaderSentiment
 requests
 requests_oauthlib
 keras
+pymongo
+joblib
+scikit-learn
+jupyter
+ipykernel

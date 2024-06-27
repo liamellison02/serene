@@ -1,37 +1,25 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Chart1, Chart2, BarGraph, CurveGraph, PieGraph } from "../components/Charts"
+import { useLocation } from 'react-router-dom';
+import EmotionPreview from "../components/EmotionPreview";
+import Feed from "../components/Feed";
+import { useGetDataQuery } from "../redux/tweetDataAPI"
 
 function Dashboard() {
-    const { userId } = useParams();
-    const [results, setResults] = useState(null);
-    const [user, setUser] = useState(null);
-    const [userTweets, setUserTweets] = useState(null);
-    const [timeline, setTimeline] = useState(null);
-    
+	const location = useLocation();
+	const params = new URLSearchParams(location.search)
+	let user_id = params.get("user_id")
+	useGetDataQuery(user_id)
 
-    useEffect(() => {
-        // Fetch the results from the backend
-        fetch(`/api/results/${userId}`)
-          .then(response => response.json())
-          .then(data => {
-            setResults(data.results);
-            setUserTweets(data.tweets);
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
-      }, [userId]);
-
-    return (
-        <div className="w-full h-full pt-[60px] flex justify-evenly items-center flex-wrap">
-            <div className="w-[300px] h-[300px]"><CurveGraph/></div>
-            <div className="w-[300px] h-[300px]"><Chart1/></div>
-            <div className="w-[300px] h-[300px]"><BarGraph/></div>
-            <div className="w-[300px] h-[300px]"><Chart2/></div>
-            <div className="w-[300px] h-[300px]"><PieGraph/></div>
-        </div>
-    );
+	return (
+		<div id="HomePage" className="w-full h-full flex flex-col md:flex-row justify-between items-center">
+			<div className="w-[55%] h-full px-[60px] mx-auto">
+				 <Feed />
+			</div>
+			<div className="w-[35%] h-full"/>
+			<a href="/analysis" className="w-[35%] h-full fixed right-0 top-0 bg-[#FFFFFF]">
+				<EmotionPreview />
+			</a>
+		</div>
+	);
 }
 
 export default Dashboard

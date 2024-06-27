@@ -2,10 +2,13 @@ import os
 import re
 import base64
 import hashlib
-
+from bson.json_util import dumps
 import requests
 from requests_oauthlib import OAuth2Session
 from flask import Blueprint, request, redirect, jsonify, session
+from .security import add_usage, server_reached_limit, user_reached_limit
+from .db import get_worker
+db = get_worker(os.environ['DB_URI'])
 
 twitter_bp = Blueprint('twitter', __name__)
 
@@ -18,43 +21,56 @@ USER_TIMELINE_URL = os.environ['USER_TIMELINE_URL']
 USER_TWEETS_URL = os.environ['USER_TWEETS_URL']
 API_USERS_ENDPOINT = os.environ['API_USERS_ENDPOINT']
 
-code_verifier = base64.urlsafe_b64encode(os.urandom(30)).decode("utf-8")
-code_verifier = re.sub("[^a-zA-Z0-9]+", "", code_verifier)
-
-code_challenge = hashlib.sha256(code_verifier.encode("utf-8")).digest()
-code_challenge = base64.urlsafe_b64encode(code_challenge).decode("utf-8")
-code_challenge = code_challenge.replace("=", "")
-
 scopes = ['tweet.read', 'users.read', 'follows.read', 'follows.write']
-                       
+                
 
 @twitter_bp.route('/authorize/twitter')
 def twitter_info():
-    global twitter
-    twitter = OAuth2Session(
-        client_id=CLIENT_ID,
-        scope=scopes,
-        redirect_uri=REDIRECT_URI
-    )
-    auth_url, state = twitter.authorization_url(
-        AUTHORIZE_URL, code_challenge=code_challenge, code_challenge_method='S256'
-    )
-    session["oauth_state"] = state
+    return redirect(f'/dashboard?user_id=example')
+
+    # code_verifier = base64.urlsafe_b64encode(os.urandom(30)).decode("utf-8")
+    # code_verifier = re.sub("[^a-zA-Z0-9]+", "", code_verifier)
+
+    # code_challenge = hashlib.sha256(code_verifier.encode("utf-8")).digest()
+    # code_challenge = base64.urlsafe_b64encode(code_challenge).decode("utf-8")
+    # code_challenge = code_challenge.replace("=", "")
+
+    # global twitter
+    # twitter = OAuth2Session(
+    #     client_id=CLIENT_ID,
+    #     scope=scopes,
+    #     redirect_uri=REDIRECT_URI
+    # )
+    # auth_url, state = twitter.authorization_url(
+    #     AUTHORIZE_URL, code_challenge=code_challenge, code_challenge_method='S256'
+    # )
+    # session["oauth_state"] = state
+    # db.session.insert_one(
+    #     {
+    #         "session_data": dumps(session), 
+    #         "code_challenge": code_challenge, 
+    #         "code_verifier": code_verifier,
+    #         "state": state
+    #     }
+    # )
     
-    return redirect(auth_url)
+    # return redirect(auth_url)
 
 
-@twitter_bp.route('/callback', methods=["GET"])
+@twitter_bp.route('/callback')
 def process_user():
     code = request.args.get('code')
-
+    state = request.args.get('state')
+    session_data = db.session.find_one({"state": state})
+    
     # for offline access, you would also need to call for a bearer token as well as an access token here
     token = twitter.fetch_token(
         token_url=ACCESS_TOKEN_URL,
         client_secret=CLIENT_KEY,
-        code_verifier=code_verifier,
+        code_verifier=session_data.get("code_verifier"),
         code=code
     )
+    # need to add an upsert of token data to session collection and user_data collection
     user_info = requests.request(
         "GET", 
         API_USERS_ENDPOINT + 'me',
@@ -64,24 +80,60 @@ def process_user():
     user_id = user_info["data"]["id"]
     username = user_info["data"]["username"]
     
-    current_authorized_usernames = ['kylekorversalt', 'ArmanD39467899', 'liamellison02']
-    if username.lower() not in current_authorized_usernames:
-        return jsonify(user_info)
+    if db.users.find_one({"user_id": user_id}) is None:
+        db.users.insert_one(
+            {
+                "user_id": user_id,
+                "username": username,
+                "token": token,
+                "num_tweets_read": 0,
+                "tweet_limit": 250
+            }
+        )
+    else:
+        db.users.update_one(
+            {"user_id": user_id},
+            {"$set": {"token": token}}
+        )
+    
+    # This should be uncommented when app needs to be recalled
+    # current_authorized_usernames = ['kylekorversalt', 'ArmanD39467899', 'liamellison02']
+    # if username.lower() not in current_authorized_usernames:
+    #     return jsonify(user_info)
+    
+    if server_reached_limit():
+        return jsonify({"message": "Server has reached its limit of Twitter API reads"})
+    if user_reached_limit(user_id):
+        return jsonify({"message": "User has reached their limit of Twitter API reads"})
     
     user_tweets = requests.request(
         "GET", 
         API_USERS_ENDPOINT + user_id + USER_TWEETS_URL,
         headers={"Authorization": f'Bearer {token["access_token"]}'}, 
-        params={'max_results': 10}
+        params={'max_results': 10, 'expansions': 'author_id', 'tweet.fields': 'created_at'}
     ).json()
     user_timeline = requests.request(
         "GET", 
         API_USERS_ENDPOINT + user_id + USER_TIMELINE_URL,
         headers={"Authorization": f'Bearer {token["access_token"]}'},
-        params={'max_results': 10}
+        params={'max_results': 20, 'expansions': 'author_id', 'tweet.fields': 'created_at'}
     ).json()
+    
+    # add_usage(user_tweets["meta"]["result_count"] + user_timeline["meta"]["result_count"], user_id)
+    
+    if db.user_tweet_data.find_one({"user_id": user_id}) is not None:
+        db.user_tweet_data.update_one({"user_id": user_id}, {"$set": {"user_tweets": user_tweets, "user_timeline": user_timeline}})
+    else:
+        db.user_tweet_data.insert_one(
+            {
+                "username": username,
+                "user_id": user_id,
+                "user_timeline": user_timeline,
+                "user_tweets": user_tweets
+            }
+        )
 
-    return jsonify(user_id, username, user_tweets, user_timeline)
+    return redirect(f'https://sereneappdev.co/dashboard?user_id={user_id}')
 
 # @twitter_bp.route('/logout')
 # def logout():

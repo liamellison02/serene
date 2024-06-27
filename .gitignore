@@ -1,0 +1,19 @@
+# git repo config directory
+**.git/
+.git/
+
+# pycache directory targets
+__pycache__/
+
+.idea/
+
+# python virtual environment directory targets
+venv/
+.venv/
+env/
+.env/
+.env
+
+# excludes static react build folders
+api/flaskapp/client/
+client/build/
