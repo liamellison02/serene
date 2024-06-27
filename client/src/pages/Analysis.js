@@ -10,7 +10,7 @@ function Analysis() {
 				 <Stats />
 			</div>
 			<div className="w-[35%] h-full"/>
-			<a href="/dashboard" className="w-[35%] h-full fixed right-0 top-0 bg-[#FFFFFF]">
+			<a href="/dashboard?user_id=example" className="w-[35%] h-full fixed right-0 top-0 bg-[#FFFFFF]">
 				<EmotionPreview />
 			</a>
 		</div>
