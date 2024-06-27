@@ -26,33 +26,35 @@ scopes = ['tweet.read', 'users.read', 'follows.read', 'follows.write']
 
 @twitter_bp.route('/authorize/twitter')
 def twitter_info():
-    code_verifier = base64.urlsafe_b64encode(os.urandom(30)).decode("utf-8")
-    code_verifier = re.sub("[^a-zA-Z0-9]+", "", code_verifier)
+    return redirect(f'/dashboard?user_id=example')
 
-    code_challenge = hashlib.sha256(code_verifier.encode("utf-8")).digest()
-    code_challenge = base64.urlsafe_b64encode(code_challenge).decode("utf-8")
-    code_challenge = code_challenge.replace("=", "")
+    # code_verifier = base64.urlsafe_b64encode(os.urandom(30)).decode("utf-8")
+    # code_verifier = re.sub("[^a-zA-Z0-9]+", "", code_verifier)
 
-    global twitter
-    twitter = OAuth2Session(
-        client_id=CLIENT_ID,
-        scope=scopes,
-        redirect_uri=REDIRECT_URI
-    )
-    auth_url, state = twitter.authorization_url(
-        AUTHORIZE_URL, code_challenge=code_challenge, code_challenge_method='S256'
-    )
-    session["oauth_state"] = state
-    db.session.insert_one(
-        {
-            "session_data": dumps(session), 
-            "code_challenge": code_challenge, 
-            "code_verifier": code_verifier,
-            "state": state
-        }
-    )
+    # code_challenge = hashlib.sha256(code_verifier.encode("utf-8")).digest()
+    # code_challenge = base64.urlsafe_b64encode(code_challenge).decode("utf-8")
+    # code_challenge = code_challenge.replace("=", "")
+
+    # global twitter
+    # twitter = OAuth2Session(
+    #     client_id=CLIENT_ID,
+    #     scope=scopes,
+    #     redirect_uri=REDIRECT_URI
+    # )
+    # auth_url, state = twitter.authorization_url(
+    #     AUTHORIZE_URL, code_challenge=code_challenge, code_challenge_method='S256'
+    # )
+    # session["oauth_state"] = state
+    # db.session.insert_one(
+    #     {
+    #         "session_data": dumps(session), 
+    #         "code_challenge": code_challenge, 
+    #         "code_verifier": code_verifier,
+    #         "state": state
+    #     }
+    # )
     
-    return redirect(auth_url)
+    # return redirect(auth_url)
 
 
 @twitter_bp.route('/callback')

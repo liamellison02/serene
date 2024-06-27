@@ -68,12 +68,16 @@ def analyze():
      }
     """
 
-    user_id = request.args.get('user_id')
+    # user_id = request.args.get('user_id')
+    # if user_id == 'null':
+    #     print("User id not given")
+    #     return jsonify({"error": "User id not given"}), 400
 
-    if user_id == 'null':
-        print("User id not given")
-        return jsonify({"error": "User id not given"}), 400
-    
+    data = db.user_twitter_data.find_one({"user_id": 'example'})
+    print(data['analysis'])
+    return jsonify(data['analysis'])
+    print("I SHOULD NOT RUN")
+
     data = db.user_tweet_data.find_one({"user_id": user_id})
     user_tweets = data['user_tweets']
     user_timeline = data['user_timeline']
